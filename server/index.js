@@ -1,7 +1,13 @@
 const express = require('express');
-
 const app = express();
-const port = 3000;
+
+var env = process.env.ENVIRONMENT;
+
+if (['development', 'production'].indexOf(env) == -1) {
+    env = 'development';
+}
+
+const port = env == 'development' ? 3000 : 80;
 
 app.get('/hello', (req, res) => res.send('Hi, we are Engineers without Doctors!'));
 
