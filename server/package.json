@@ -1,0 +1,22 @@
+{
+  "name": "diagram-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KTY-Studio/Diagram.git"
+  },
+  "author": "Engineers without Doctors",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KTY-Studio/Diagram/issues"
+  },
+  "homepage": "https://github.com/KTY-Studio/Diagram#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
