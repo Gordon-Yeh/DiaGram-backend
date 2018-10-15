@@ -1,17 +1,11 @@
 const express = require('express');
 var bodyParser = require('body-parser');
+var env = require('./env.js').setup();
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-var env = process.env.ENVIRONMENT;
 var db;
-
-if (['development', 'production'].indexOf(env) == -1) {
-    env = 'development';
-}
-
-const port = env == 'development' ? 3000 : 80;
 
 // RESTful API call handling
 //=====================================
@@ -40,7 +34,7 @@ const MongoClient = require('mongodb').MongoClient;
 MongoClient.connect('mongodb+srv://diagram_server:M6qcdfrqt3jjv4Uq@cluster0-k8yai.mongodb.net/test?retryWrites=true', { useNewUrlParser: true }, (err, client) => {
 	if (err) return console.log(err);
 	db = client.db('DiaGramDB');
-	app.listen(port, () => {
-		console.log(`Diagram API server listening on port ${port}!`);
+	app.listen(env.PORT, () => {
+		console.log(`Diagram API server listening on port ${env.PORT}!`);
 	});
 });
