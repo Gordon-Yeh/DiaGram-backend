@@ -4,6 +4,7 @@
   "description": "To run the server locally, type in:\r node index.js\r in the current folder",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
