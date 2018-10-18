@@ -14,7 +14,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
  * this routes all call with starting path "/users" to usersRouter
  */
 app.use('/users', usersRouter);
+// TODO: add posts routing
+// TODO: add session routing
+// TODO: add error handling routing
 
+// TODO: implement Promise so don't have to deal with callback functions
 MongoClient.connect(env.DB_URL, { useNewUrlParser: true }, function(err, client) {
 	if (err) throw err;
 	/**
