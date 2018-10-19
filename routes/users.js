@@ -1,25 +1,37 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const User = require('../models/User.js');
 
-//this just returns all users
 router.get('/', (req, res) => {
-	var db = req.app.locals.db;
-	db.collection('users')
+	User
 		.find()
-		.toArray(function(err, results) {
-			console.log(results);
+		.then((results) => {
 			res.send(results);
+		})
+		.catch((err) => {
+			console.error(err);
+			res.status(500).send(error);
 		});
 });
 
-//unfinished
-router.get('/:username', (req, res) => {
-	var db = req.app.locals.db;
-	db.collection('users')
-		.find({ 'username': [req.body] })
-		.toArray(function(err, results) {
-			console.log(results);
-			res.send(results);
+router.post('/add', (req, res) => {
+	let newUser = new User({
+		_id: new mongoose.Types.ObjectId(),
+		username: req.body.username,
+		password: req.body.password,
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+	});
+
+	newUser
+		.save()
+		.then((result) => {
+			res.send(result);
+		})
+		.catch((err) => {
+			console.error(err);
+			res.status(500).send(err);
 		});
 });
 

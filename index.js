@@ -1,6 +1,6 @@
 const express = require('express');
 var bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 const usersRouter = require('./routes/users.js');
 var envConfig = require('./config/env.js');
 
@@ -19,15 +19,7 @@ app.use('/users', usersRouter);
 // TODO: add error handling routing
 
 // TODO: implement Promise so don't have to deal with callback functions
-MongoClient.connect(env.DB_URL, { useNewUrlParser: true }, function(err, client) {
-	if (err) throw err;
-	/**
-	 * collection pooling
-	 * reference: https://medium.com/@tarkus/how-to-open-database-connections-in-a-node-js-express-app-e14b2de5d1f8
-	 * can be used from req.app.locals.db during routing
-	 */
-	app.locals.db = client.db('DiaGramDB');;
-});
+mongoose.connect(env.DB_URL, { useNewUrlParser: true });
 
 app.listen(env.PORT, () => {
 	console.log(`Diagram API server listening on port ${env.PORT}!`);
