@@ -1,14 +1,16 @@
 const express = require('express');
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users.js');
-var envConfig = require('./config/env.js');
+const sessionRouter = require('./routes/sessions.js');
+const envConfig = require('./config/env.js');
 
-var env = envConfig.get();
+const env = envConfig.get();
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 /**
  * this routes all call with starting path "/users" to usersRouter
@@ -16,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRouter);
 // TODO: add posts routing
 // TODO: add session routing
+app.use('/codes', sessionRouter);
 // TODO: add error handling routing
 
 // TODO: implement Promise so don't have to deal with callback functions
