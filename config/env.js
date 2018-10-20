@@ -2,6 +2,9 @@ var env;
 
 function init() {
     var nodeEnv = process.env;
+    var DB_USER = 'diagram_server';
+    var DB_PW = 'DoctorWho';
+    var DB_NAME = 'DiaGramDB';
     env = {};
 
     env.ENV = nodeEnv.ENV;
@@ -9,18 +12,16 @@ function init() {
         env.ENV = 'development';
     }
 
-    if (!nodeEnv.DB_ROUTE) {
-        env.DB_ROUTE = 'test';
-    }  else {
-        env.DB_ROUTE = nodeEnv.DB_ROUTE;
-    }
-
     env.PORT = {
         production:  80,
         development: 3000,
     }[env.ENV];
 
-    env.DB_URL = `mongodb+srv://${nodeEnv.DB_NAME}:${nodeEnv.DB_PASS}@cluster0-k8yai.mongodb.net/${env.DB_ROUTE}?retryWrites=true`;
+    env.DB_USER = nodeEnv.DB_USER || 'diagram_server';
+    env.DB_PW = nodeEnv.DB_PW || 'DoctorWho';
+    env.DB_NAME = nodeEnv.DB_NAME || 'DiaGramDB';
+
+    env.DB_URL = `mongodb+srv://${DB_USER}:${DB_PW}@cluster0-k8yai.mongodb.net/${DB_NAME}?retryWrites=true`;
     
     return env;
 }
