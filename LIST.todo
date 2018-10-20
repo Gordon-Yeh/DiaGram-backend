@@ -1,3 +1,2 @@
-TODO: 1. integrate eslint [https://eslint.org/docs/user-guide/getting-started]
-TODO: 2. redo routing files
-TODO: 3. integrate express-validator [https://github.com/express-validator/express-validator]
+TODO: integrate express-validator [https://github.com/express-validator/express-validator]
+TODO: integrate rebug [https://www.npmjs.com/package/debug]
