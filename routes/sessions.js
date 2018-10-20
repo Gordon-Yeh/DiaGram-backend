@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     newAccessCode
         .save()
         .then((result) => {
-            res.status(201).send(result);
+            res.status(200).send(result);
         })
         .catch((err) => {
             console.error(err);
