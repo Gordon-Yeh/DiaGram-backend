@@ -11,6 +11,7 @@ const session = require('../managers/session.js');
 // User routes
 router.get('/users/', (req, res) => {
     User
+        .model
         .find()
         .then((results) => {
             res.send(results);
@@ -21,36 +22,7 @@ router.get('/users/', (req, res) => {
         });
 });
 
-//TODO: Fix: currently always deletes access codes right now, even if bad input for user parameters
-router.post('/users/add', (req, res) => {
-    AccessCode
-        .findOneAndDelete({ accessCode: req.body.accessCode })
-        .then((accode) => {
-            let newUser = new User({
-                _id: new mongoose.Types.ObjectId(),
-                username: req.body.username,
-                password: req.body.password,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                userType: accode.userType,
-            });
-    
-            newUser
-                .save()
-                .then((result) => {
-                    //AccessCode.findOneAndRemove({ accessCode: req.body.accessCode });
-                    console.log('Deleting access code... '+ req.body.accessCode);
-                    res.status(201).send(result);
-                })
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).send(err);
-                });
-        })
-        .catch((err) => {
-            res.status(500).json({ error: "INVALID_CODE" });
-        });
-});
+router.post('/users/add', user.signup);
 
 //temporary, can be used to add access codes through the API for now
 router.post('/codes', (req, res) => {
