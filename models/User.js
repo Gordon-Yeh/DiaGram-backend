@@ -16,10 +16,10 @@ const userSchema = mongoose.Schema({
 const model = mongoose.model('User', userSchema);
 
 /**
- * 
- * @return {Promise} resolve: User model 
- * 
- * @param {Object} user object containing the fields to create a User model 
+ *
+ * @return {Promise} resolve: User model
+ *
+ * @param {Object} user object containing the fields to create a User model
  */
 const create = (user) => {
     let userModel = new model(user);
@@ -37,7 +37,7 @@ const create = (user) => {
             if (validate.errors['password'].message) {
                 errors.push(errors.INVALID_PASSWORD);
             }
-            
+
             if (validate.errors['userType'].message) {
                 errors.push(errors.INVALID_USER_TYPE);
             }

@@ -12,7 +12,7 @@ function signup(req, res) {
 
     let code = req.body.code;
 
-    // TODO: change respond with correct status code for different errors 
+    // TODO: change respond with correct status code for different errors
     AccessCode
         .exist(code)
         .then((userType) => {
@@ -36,6 +36,11 @@ function signup(req, res) {
         });
 }
 
+function getUser(req, res) {
+    res.status(200).send("this is just to make sure JWT works!");
+}
+
 module.exports = {
     signup,
+    getUser,
 }
