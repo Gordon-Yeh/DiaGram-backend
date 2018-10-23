@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js'); //TODO: move to model code
-const {check, validationResult } = require('express-validator/check');
+const { check, validationResult } = require('express-validator/check');
 
-//TODO: share secret key so middleware can use
+// TODO: share secret key so middleware can use
+// TODO: make these env variables
 const SECRET_KEY = 'We have no idea what doctors or patients actually want';
 const SESSION_TIMEOUT = '1h';
 
 /**
  * Verifies user information with database
- *
  */
 function login(req, res) {
     let errors = validationResult(req);

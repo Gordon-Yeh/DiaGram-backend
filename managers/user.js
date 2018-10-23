@@ -29,7 +29,7 @@ function signup(req, res) {
             res.json({
                 username: newUser.username,
                 userType: newUser.userType
-            })
+            });
         })
         .catch((err) => {
             res.status(500).json(err);
@@ -43,4 +43,4 @@ function getUser(req, res) {
 module.exports = {
     signup,
     getUser,
-}
+};
