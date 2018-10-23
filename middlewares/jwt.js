@@ -20,10 +20,7 @@ function verifyJWT(req, res, next) {
         if(err) {
             res.sendStatus(403);
         } else {
-            res.json({
-                message: 'jwt verified',
-                authData
-            });
+            next();
         }
     });
 }

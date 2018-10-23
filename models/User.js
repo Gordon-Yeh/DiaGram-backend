@@ -50,7 +50,18 @@ const create = (user) => {
         });
 }
 
+// TEMP: authentication function: checks if user with username and password
+// exists in database, returns user document if it does
+const authenticate = (user) => {
+    return model
+        .findOne({ username: user.username, password: user.password })
+        .then((result) => {
+            return result;
+        });
+}
+
 module.exports = {
     model,
     create,
+    authenticate,
 }
