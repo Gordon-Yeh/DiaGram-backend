@@ -20,9 +20,8 @@ function init() {
     env.DB_USER = nodeEnv.DB_USER || 'diagram_server';
     env.DB_PW = nodeEnv.DB_PW || 'DoctorWho';
     env.DB_NAME = nodeEnv.DB_NAME || 'DiaGramDB';
-
     env.DB_URL = `mongodb+srv://${DB_USER}:${DB_PW}@cluster0-k8yai.mongodb.net/${DB_NAME}?retryWrites=true`;
-    
+
     return env;
 }
 
