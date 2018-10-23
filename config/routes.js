@@ -12,9 +12,9 @@ const session = require('../managers/session.js');
 const validator = require('../middlewares/validation.js');
 const jwt = require('../middlewares/jwt.js');
 
-router.post('/users/add', user.signup/*, session.login*/);
 router.get('/users', jwt.verifyToken, jwt.verifyJWT, user.getUser);
 
+router.post('/signup', user.signup, session.login);
 router.post('/login', validator.userSignup, session.login);
 
 module.exports = router;

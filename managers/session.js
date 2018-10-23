@@ -39,24 +39,6 @@ function login(req, res) {
     });
 }
 
-// /**
-//  * @returns {Promise}
-//  *     resolves: user credentials are valid
-//  *     rejects: user credentials invalid
-//  * @param {user} username and password required to authenticate user
-//  * TODO: dummy function, check database to verify username and password
-//  * TODO: add security, so there's no plaintext password
-//  */
-// function authenticate(user) {
-//     return new Promise((resolve, reject) => {
-//         if(user) {
-//             resolve();
-//         } else {
-//             reject();
-//         }
-//     });
-// }
-
 module.exports = {
     login,
 }

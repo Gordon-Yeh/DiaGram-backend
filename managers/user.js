@@ -2,7 +2,7 @@ const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 const mongoose = require('mongoose');
 
-function signup(req, res) {
+function signup(req, res, next) {
     let newUser = {
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
@@ -29,10 +29,7 @@ function signup(req, res) {
             return AccessCode.deleteCode(code);
         })
         .then(() => {
-            res.json({
-                username: newUser.username,
-                userType: newUser.userType
-            });
+            next(); //go to login
         })
         .catch((err) => {
             console.log(err);
