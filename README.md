@@ -18,9 +18,9 @@ To run the server locally, run: <br />
 
    **Required:**
  
-   `username: [String]` <br />
-   `password: [String]` <br />
-   `accessCode: [String]` <br />
+   `username: <String>` <br />
+   `password: <String>` <br />
+   `accessCode: <String>` <br />
 
 * **Success Response:**
 
@@ -28,10 +28,10 @@ To run the server locally, run: <br />
     **Content:** <br />
     `
     {
-        jwt: [String],
+        jwt: <String>,
         user: {
-            _id: [String],
-            username: [String]
+            _id: <String>,
+            username: <String>
         }
     }
     `
@@ -57,8 +57,8 @@ Grant session to a user given the username and password
 
    **Required:**
  
-   `username: [String]` <br />
-   `password: [String]` <br />
+   `username: <String>` <br />
+   `password: <String>` <br />
 
 * **Success Response:**
 
@@ -66,10 +66,10 @@ Grant session to a user given the username and password
     **Content:** <br />
     `
     {
-        jwt: [String],
+        jwt: <String>,
         user: {
-            _id: [String],
-            username: [String]
+            _id: <String>,
+            username: <String>
         }
     }
     `
@@ -97,10 +97,6 @@ Get posts for app feed
    **Required:**
   
   `Authorization: "Bearer ${jwt}"`
-
-*  **URL Query**
-
-   **Optional:**
     
 * **Success Response:**
 
@@ -110,15 +106,16 @@ Get posts for app feed
     {
         posts: [
           {
-            _id: [String],
-            tite: [String],
-            body: [String],
+            _id: <String>,
+            tite: <String>,
+            body: <String>,
             userType: enum { patient, doctor },
+            isOwner: <Boolean> (true if the user is owner of this post)
             comments: [
               {
-                userId: [included: if userType == doctor], 
+                _id: [included: if userType == doctor] ,
                 userType: enum { patient, doctor },
-                body: [String],
+                body: <String>,
               },
               ...
             ]
@@ -128,6 +125,61 @@ Get posts for app feed
     }
     ```
 * **Error Response:**
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+
+**Make Post**
+----
+Make a new post
+
+* **URL**
+
+  /posts
+
+* **Method:**
+
+  `POST`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+*  **URL Body**
+
+   **Required:**
+
+   `title: <String>` <br />
+   `body: <String>` <br />
+
+   **Optional:**
+
+   `private: <Boolean>` <br />
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+    ```
+    {
+      _id: <String>,
+      tite: <String>,
+      body: <String>,
+      userType: enum { patient, doctor },
+      isOwner: <Boolean> (true if the user is owner of this post)
+      comments: []
+    }
+    ```
+
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** <br />
+    `{ errors : [ "EMPTY_TITLE", "EMPTY_BODY" ] }`
 
   * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
