@@ -1,5 +1,6 @@
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
+const mongoose = require('mongoose');
 
 function signup(req, res) {
     let newUser = {
@@ -10,20 +11,22 @@ function signup(req, res) {
         lastName: req.body.lastName,
     };
 
-    let code = req.body.code;
+    let code = req.body.accessCode;
 
     // TODO: change respond with correct status code for different errors
     AccessCode
         .exist(code)
         .then((userType) => {
+            console.log(userType);
             newUser.userType = userType;
             return User.create(newUser);
         })
         .then((userModel) => {
+            console.log(userModel);
             return userModel.save();
         })
         .then((userResult) => {
-            return AccessCode.findOneAndDelete({ accessCode: code });
+            return AccessCode.deleteCode(code);
         })
         .then(() => {
             res.json({
@@ -32,6 +35,7 @@ function signup(req, res) {
             });
         })
         .catch((err) => {
+            console.log(err);
             res.status(500).json(err);
         });
 }

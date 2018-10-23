@@ -28,7 +28,14 @@ function exist(code) {
         });
 }
 
+function deleteCode(code) {
+    model
+        .findOneAndDelete({ accessCode: code })
+        .catch((err) => console.log(err));
+}
+
 module.exports = {
     model,
     exist,
+    deleteCode,
 }

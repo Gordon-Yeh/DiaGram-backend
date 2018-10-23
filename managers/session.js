@@ -21,22 +21,22 @@ function login(req, res) {
     };
 
     User.authenticate(user)
-        .then((result) => {
-            if(result) {
-                jwt.sign({user}, SECRET_KEY, /*{ expiresIn: SESSION_TIMEOUT },*/
-                (err, token) => {
-                    res.json({
-                        token: token,
-                        user: result
-                    });
+    .then((result) => {
+        if(result) {
+            jwt.sign({user}, SECRET_KEY, /*{ expiresIn: SESSION_TIMEOUT },*/
+            (err, token) => {
+                res.json({
+                    token: token,
+                    user: result
                 });
-            } else {
-                res.status(401).send('Invalid user credentials');
-            }
-        })
-        .catch((err) => {
-            res.status(500).send(err);
-        });
+            });
+        } else {
+            res.status(401).send('Invalid user credentials');
+        }
+    })
+    .catch((err) => {
+        res.status(500).send(err);
+    });
 }
 
 // /**

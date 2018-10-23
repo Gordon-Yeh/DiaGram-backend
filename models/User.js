@@ -23,13 +23,13 @@ const model = mongoose.model('User', userSchema);
  */
 const create = (user) => {
     let userModel = new model(user);
-
     var validate = userModel.validateSync();
     var errors = [];
 
     return model
         .find({ username: user.username }) /* asyn call db just to check for user name duplication */
         .then((result) => {
+            /* NOT SUPPORTED YET
             if (result && result.length > 0) {
                 errors.push(errors.DUPLICATE_USERNAME);
             }
@@ -45,6 +45,7 @@ const create = (user) => {
             if (errors.length > 0) {
                 throw { error: errors };
             }
+            */
 
             return userModel;
         });

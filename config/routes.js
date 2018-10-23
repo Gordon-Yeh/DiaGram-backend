@@ -12,27 +12,8 @@ const session = require('../managers/session.js');
 const validator = require('../middlewares/validation.js');
 const jwt = require('../middlewares/jwt.js');
 
-router.post('/users/add', user.signup);
+router.post('/users/add', user.signup/*, session.login*/);
 router.get('/users', jwt.verifyToken, jwt.verifyJWT, user.getUser);
-
-//temporary, can be used to add access codes through the API for now
-router.post('/codes', (req, res) => {
-    let newAccessCode = new AccessCode({
-        _id: new mongoose.Types.ObjectId(),
-        accessCode: req.body.accessCode,
-        userType: req.body.userType
-    });
-
-    newAccessCode
-        .save()
-        .then((result) => {
-            res.status(200).send(result);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send(err);
-        });
-});
 
 router.post('/login', validator.userSignup, session.login);
 
