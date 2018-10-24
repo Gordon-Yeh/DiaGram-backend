@@ -17,8 +17,11 @@ function makePost(req, res) {
         })
         .then((postObject) => {
             debug(`makePost() CREATED new post ${JSON.stringify(postObject)}`);
-            // TODO: modify the return post object to match documentation
-            res.json(postObject);
+            return Post
+                .fetchOne({ _id: postObject._id })
+                .then((pt) => {
+                    res.json(pt);
+                });
         })
         .catch((err) => {
             debug(`makePost() CAUGHT ERROR ${err.toString()}`);
@@ -31,10 +34,9 @@ function getPosts(req, res) {
     debug('getPosts()');
 
     Post
-        .model
-        .find()
-        .then((posts) => {
-            res.json(posts);
+        .fetch()
+        .then((pts) => {
+            res.json(pts);
         })
         .catch((err) => {
             debug(`makePost() CAUGHT ERROR ${err.toString()}`);

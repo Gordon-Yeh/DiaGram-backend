@@ -12,8 +12,7 @@ const postSchema = mongoose.Schema({
     comments: [],
     createdAt: { type : Date, default: Date.now },
     updatedAt: { type : Date, default: Date.now, index: true },
-    private: { type: Boolean, default: false },
-    __v: { type: Number, select: false }
+    private: { type: Boolean, default: false }
 });
 
 const model = mongoose.model('Post', postSchema);
@@ -51,7 +50,51 @@ const create = (fields) => {
     })
 }
 
+
+/**
+ * Create a model that includes the fields
+ * @returns {Promise} resolves a Post model
+ * @param {Object} fields requires: { title, body, userId, userType }
+ */
+const fetch = (query) => {
+    return model
+        .find(query)
+        .then((posts) => {
+            return posts.map(pt => ({
+                _id: pt._id,
+                title: pt.title,
+                body: pt.body,
+                userId: pt.userId,
+                userType: pt.userType,
+                comments: pt.comments,
+                createdAt: pt.createdAt,
+                updatedAt: pt.updatedAt,
+                private: pt.private,
+            }));
+        });
+};
+
+const fetchOne = (query) => {
+    return model
+        .findOne(query)
+        .then((pt) => {
+            return {
+                _id: pt._id,
+                title: pt.title,
+                body: pt.body,
+                userId: pt.userId,
+                userType: pt.userType,
+                comments: pt.comments,
+                createdAt: pt.createdAt,
+                updatedAt: pt.updatedAt,
+                private: pt.private,
+            };
+        });
+};
+
 module.exports = {
     model,
     create,
+    fetch,
+    fetchOne
 };
