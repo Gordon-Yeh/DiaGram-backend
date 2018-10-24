@@ -1,3 +1,4 @@
+const debug = require('debug')('diagram:model:AccessCode');
 const mongoose = require('mongoose');
 const errors = require('../config/errorTypes.js');
 
@@ -18,6 +19,8 @@ const model = mongoose.model('AccessCode', accessCodeSchema);
  * @param {String} code
  */
 function exist(code) {
+    debug('exist()');
+
     return model
         .findOne({ accessCode: code })
         .then((result) => {
@@ -29,6 +32,8 @@ function exist(code) {
 }
 
 function deleteCode(code) {
+    debug('deleteCode()');
+
     model
         .findOneAndDelete({ accessCode: code })
         .catch((err) => console.log(err));

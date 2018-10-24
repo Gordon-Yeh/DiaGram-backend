@@ -1,3 +1,4 @@
+const debug = require('debug')('diagram:model:User');
 const mongoose = require('mongoose');
 const errors = require('../config/errorTypes.js');
 
@@ -22,6 +23,8 @@ const model = mongoose.model('User', userSchema);
  * @param {Object} user object containing the fields to create a User model
  */
 const create = (user) => {
+    debug('create()');
+
     let userModel = new model(user);
     var validate = userModel.validateSync();
     var errors = [];
@@ -54,6 +57,8 @@ const create = (user) => {
 // TEMP: authentication function: checks if user with username and password
 // exists in database, returns user document if it does
 const authenticate = (user) => {
+    debug('authenticate()');
+
     return model
         .findOne({ username: user.username, password: user.password })
         .then((result) => {

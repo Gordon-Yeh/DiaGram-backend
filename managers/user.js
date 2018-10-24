@@ -1,8 +1,11 @@
+const debug = require('debug')('diagram:manager:user');
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 const mongoose = require('mongoose');
 
 function signup(req, res, next) {
+    debug('signup()');
+
     let newUser = {
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
