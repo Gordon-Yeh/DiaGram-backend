@@ -12,6 +12,7 @@ const postSchema = mongoose.Schema({
     comments: [],
     createdAt: { type : Date, default: Date.now },
     updatedAt: { type : Date, default: Date.now, index: true },
+    private: { type: Boolean, default: false },
     __v: { type: Number, select: false }
 });
 

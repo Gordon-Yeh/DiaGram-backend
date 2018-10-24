@@ -29,6 +29,17 @@ function makePost(req, res) {
 // TODO: add filter query
 function getPosts(req, res) {
     debug('getPosts()');
+
+    Post
+        .model
+        .find()
+        .then((posts) => {
+            res.json(posts);
+        })
+        .catch((err) => {
+            debug(`makePost() CAUGHT ERROR ${err.toString()}`);
+            res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+        });
 }
 
 module.exports = {
