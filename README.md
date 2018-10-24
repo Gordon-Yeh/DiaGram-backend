@@ -103,26 +103,24 @@ Get posts for app feed
   * **Code:** 200 <br />
     **Content:** <br />
     ```
-    {
-        posts: [
+    [
+      {
+        _id: <String>,
+        tite: <String>,
+        body: <String>,
+        userType: enum { patient, doctor },
+        private: <Boolean>
+        comments: [
           {
-            _id: <String>,
-            tite: <String>,
-            body: <String>,
+            _id: [included: if userType == doctor] ,
             userType: enum { patient, doctor },
-            isOwner: <Boolean> (true if the user is owner of this post)
-            comments: [
-              {
-                _id: [included: if userType == doctor] ,
-                userType: enum { patient, doctor },
-                body: <String>,
-              },
-              ...
-            ]
+            body: <String>,
           },
           ...
         ]
-    }
+      },
+      ...
+    ]
     ```
 * **Error Response:**
 
@@ -170,7 +168,7 @@ Make a new post
       tite: <String>,
       body: <String>,
       userType: enum { patient, doctor },
-      isOwner: <Boolean> (true if the user is owner of this post)
+      private: <Boolean>
       comments: []
     }
     ```
