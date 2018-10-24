@@ -2,7 +2,7 @@ const debug = require('debug')('diagram:manager:Post');
 const Post = require('../models/Post.js');
 const errorTypes = require('../config/errorTypes');
 
-function makePost(req, res) {
+function makePost(req, res, next) {
     debug('makePost()');
 
     Post
@@ -13,19 +13,26 @@ function makePost(req, res) {
             userType: req.user.userType
         })
         .then((postModel) => {
-            return postModel.save();
-        })
-        .then((postObject) => {
-            debug(`makePost() CREATED new post ${JSON.stringify(postObject)}`);
-            return Post
-                .fetchOne({ _id: postObject._id })
+            debug(`makePost() CREATED new post ${JSON.stringify(postModel)}`);
+
+            return postModel
+                .save()
+                .then((postObject) => {
+                    return Post.fetchOne({ _id: postObject._id });
+                })
                 .then((pt) => {
                     res.json(pt);
+                })
+                .catch((err) => {
+                    debug(`makePost() CAUGHT ERROR ${err.toString()}`);
+
+                    res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
                 });
         })
         .catch((err) => {
             debug(`makePost() CAUGHT ERROR ${err.toString()}`);
-            res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+
+            res.status(400).json({ errors: err });
         });
 }
 
@@ -40,6 +47,7 @@ function getPosts(req, res) {
         })
         .catch((err) => {
             debug(`makePost() CAUGHT ERROR ${err.toString()}`);
+
             res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
         });
 }
