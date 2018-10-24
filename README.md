@@ -126,7 +126,7 @@ Get posts for app feed
     ```
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** 403 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -181,7 +181,7 @@ Make a new post
     **Content:** <br />
     `{ errors : [ "EMPTY_TITLE", "EMPTY_BODY" ] }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** 403 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 

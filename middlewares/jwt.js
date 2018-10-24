@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User.js');
+const errorTypes = require('../config/errorTypes');
 //TODO: this is duplicated right now, share this
 const SECRET_KEY = 'We have no idea what doctors or patients actually want';
 
@@ -11,16 +13,30 @@ function verifyToken(req, res, next) {
         req.token = bearerToken;
         next();
     } else {
-        res.sendStatus(403);
+        res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
     }
 }
 
 function verifyJWT(req, res, next) {
-    jwt.verify(req.token, SECRET_KEY, (err, authData) => {
-        if(err) {
-            res.sendStatus(403);
+    jwt.verify(req.token, SECRET_KEY, (err, payload) => {
+        if (err) {
+            res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
         } else {
-            next();
+            console.log(`verifyJWT() payload: ${JSON.stringify(payload)}`);
+            User
+                .model
+                .findOne(payload.user)
+                .then((user) => {
+                    if (!user) {
+                        res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
+                    } else {
+                        req.user = user;
+                        next();
+                    }
+                })
+                .catch((err) => {
+                    res.status(500).send({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+                });
         }
     });
 }

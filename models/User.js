@@ -5,13 +5,13 @@ const errors = require('../config/errorTypes.js');
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
     firstName: { type: String },
     lastName: { type: String },
-    following: [mongoose.Schema.Types.ObjectId],
-    createdAt: { type : Date, default: Date.now },
-    updatedAt: { type : Date, default: Date.now }
+    // following: [mongoose.Schema.Types.ObjectId], not used for now
+    createdAt: { type : Date, default: Date.now, select: false },
+    updatedAt: { type : Date, default: Date.now, select: false }
 });
 
 const model = mongoose.model('User', userSchema);
@@ -64,6 +64,18 @@ const authenticate = (user) => {
         .then((result) => {
             return result;
         });
+}
+
+/**
+ * checks to see if the string of code exists within db
+ * @returns {Promise}
+ *      resolves: userType assoicated to the code
+ *      rejects: error
+ * @param {Object} query of user fields
+ */
+function exist(query) {
+    return model
+        .findOne(query);
 }
 
 module.exports = {
