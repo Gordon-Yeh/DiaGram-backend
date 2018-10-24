@@ -66,18 +66,6 @@ const authenticate = (user) => {
         });
 }
 
-/**
- * checks to see if the string of code exists within db
- * @returns {Promise}
- *      resolves: userType assoicated to the code
- *      rejects: error
- * @param {Object} query of user fields
- */
-function exist(query) {
-    return model
-        .findOne(query);
-}
-
 module.exports = {
     model,
     create,
