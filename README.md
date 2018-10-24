@@ -116,10 +116,8 @@ Get posts for app feed
             userType: enum { patient, doctor },
             comments: [
               {
-                user: {
-                  _id: [included: if userType == doctor] 
-                  userType: enum { patient, doctor },
-                },
+                userId: [included: if userType == doctor], 
+                userType: enum { patient, doctor },
                 body: [String],
               },
               ...

@@ -29,7 +29,7 @@ function login(req, res) {
             jwt.sign({user}, SECRET_KEY, /*{ expiresIn: SESSION_TIMEOUT },*/
             (err, token) => {
                 res.json({
-                    token: token,
+                    jwt: token,
                     user: result
                 });
             });
