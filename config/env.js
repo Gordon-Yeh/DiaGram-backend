@@ -8,7 +8,7 @@ function init() {
     env = {};
 
     env.ENV = nodeEnv.ENV;
-    if (['development', 'production'].indexOf(env.ENV) == -1) {
+    if (['development', 'production'].indexOf(env.ENV) === -1) {
         env.ENV = 'development';
     }
 

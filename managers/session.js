@@ -15,7 +15,7 @@ function login(req, res) {
 
     let errors = validationResult(req);
     if(!errors.isEmpty()) {
-        res.status(422).json({ errors: error.array() });
+        res.status(422).json({ errors: errors.array() });
     }
 
     let user = {
@@ -44,4 +44,4 @@ function login(req, res) {
 
 module.exports = {
     login,
-}
+};

@@ -1,7 +1,7 @@
 const debug = require('debug')('diagram:model:Post');
 const mongoose = require('mongoose');
 const types = require('./schemaTypes.js');
-const errorTypes = require('../config/errorTypes');
+const errorTypes = require('../config/errorTypes.js');
 
 const postSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -26,7 +26,7 @@ const create = (fields) => {
     debug(`create(): fields = ${JSON.stringify(fields)}`);
 
     return new Promise((resolve, reject) => {
-        errors = [];
+        let errors = [];
 
         if (!fields.title) {
             errors.push(errorTypes.EMPTY_TITLE);
@@ -47,8 +47,8 @@ const create = (fields) => {
             userId: fields.userId,
             userType: fields.userType,
         }));
-    })
-}
+    });
+};
 
 
 /**
@@ -60,7 +60,7 @@ const fetch = (query) => {
     return model
         .find(query)
         .then((posts) => {
-            return posts.map(pt => ({
+            return posts.map((pt) => ({
                 _id: pt._id,
                 title: pt.title,
                 body: pt.body,

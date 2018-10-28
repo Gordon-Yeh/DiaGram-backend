@@ -20,12 +20,10 @@ function signup(req, res, next) {
     AccessCode
         .exist(code)
         .then((userType) => {
-            console.log(userType);
             newUser.userType = userType;
             return User.create(newUser);
         })
         .then((userModel) => {
-            console.log(userModel);
             return userModel.save();
         })
         .then((userResult) => {
@@ -35,7 +33,6 @@ function signup(req, res, next) {
             next(); //go to login
         })
         .catch((err) => {
-            console.log(err);
             res.status(500).json(err);
         });
 }
