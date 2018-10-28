@@ -2,10 +2,7 @@ const debug = require('debug')('diagram:manager:session');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js'); //TODO: move to model code
 const { check, validationResult } = require('express-validator/check');
-
-// TODO: share secret key so middleware can use
-// TODO: make these env variables
-const SECRET_KEY = 'We have no idea what doctors or patients actually want';
+const env = require('../config/env.js').get();
 
 /**
  * Verifies user information with database
@@ -26,13 +23,21 @@ function login(req, res) {
     User.authenticate(user)
     .then((result) => {
         if(result) {
-            jwt.sign({user}, SECRET_KEY, /*{ expiresIn: SESSION_TIMEOUT },*/
-            (err, token) => {
-                res.json({
-                    jwt: token,
-                    user: result
-                });
-            });
+            jwt.sign(
+                { user: {
+                    _id:      result._id,
+                    username: result.username,
+                    userType: result.userType
+                } },
+                /*{ expiresIn: SESSION_TIMEOUT },*/
+                env.JWT_SECRET,
+                (err, token) => {
+                    res.json({
+                        jwt: token,
+                        user: result
+                    });
+                }
+            );
         } else {
             res.status(401).send('Invalid user credentials');
         }
