@@ -23,13 +23,21 @@ function login(req, res) {
     User.authenticate(user)
     .then((result) => {
         if(result) {
-            jwt.sign({user}, env.JWT_SECRET, /*{ expiresIn: SESSION_TIMEOUT },*/
-            (err, token) => {
-                res.json({
-                    jwt: token,
-                    user: result
-                });
-            });
+            jwt.sign(
+                { user: {
+                    _id:      result._id,
+                    username: result.username,
+                    userType: result.userType
+                } },
+                /*{ expiresIn: SESSION_TIMEOUT },*/
+                env.JWT_SECRET,
+                (err, token) => {
+                    res.json({
+                        jwt: token,
+                        user: result
+                    });
+                }
+            );
         } else {
             res.status(401).send('Invalid user credentials');
         }
