@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon index.js DEBUG=diagram:*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

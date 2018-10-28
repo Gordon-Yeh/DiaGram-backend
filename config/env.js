@@ -26,7 +26,7 @@ function init() {
 }
 
 function get() {
-    if (!env) init();
+    if (!env) { init(); }
     return env;
 }
 

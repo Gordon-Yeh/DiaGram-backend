@@ -27,30 +27,9 @@ const create = (user) => {
 
     let userModel = new model(user);
     let validate = userModel.validateSync();
-    let errors = [];
 
-    return model
-        .find({ username: user.username }) /* asyn call db just to check for user name duplication */
-        .then((result) => {
-            if (result && result.length > 0) {
-                errors.push(errorTypes.DUPLICATE_USERNAME);
-            }
-
-            if (validate.errors['password'].message) {
-                errors.push(errorTypes.INVALID_PASSWORD);
-            }
-
-            if (validate.errors['userType'].message) {
-                errors.push(errorTypes.INVALID_USER_TYPE);
-            }
-
-            if (errors.length > 0) {
-                throw { error: errors };
-            }
-
-            return userModel;
-        });
-}
+    return userModel;
+};
 
 // TEMP: authentication function: checks if user with username and password
 // exists in database, returns user document if it does
