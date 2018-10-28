@@ -15,6 +15,7 @@ function init() {
     }[env.ENV];
 
     env.DB_URL = nodeEnv.DB_URL;
+    env.JWT_SECRET = nodeEnv.JWT_SECRET;
 
     return env;
 }
