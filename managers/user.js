@@ -24,10 +24,6 @@ function signup(req, res, next) {
             newUser.userType = userType;
             return User.create(newUser);
         })
-        .then((userModel) => {
-            console.log(userModel);
-            return userModel.save();
-        })
         .then((userResult) => {
             return AccessCode.deleteCode(code);
         })

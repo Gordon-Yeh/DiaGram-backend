@@ -1,6 +1,7 @@
 const debug = require('debug')('diagram:model:User');
 const mongoose = require('mongoose');
 const errors = require('../config/errorTypes.js');
+const hash = require('../utils/hash.js');
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -17,7 +18,6 @@ const userSchema = mongoose.Schema({
 const model = mongoose.model('User', userSchema);
 
 /**
- *
  * @return {Promise} resolve: User model
  *
  * @param {Object} user object containing the fields to create a User model
@@ -25,32 +25,26 @@ const model = mongoose.model('User', userSchema);
 const create = (user) => {
     debug('create()');
 
-    let userModel = new model(user);
-    var validate = userModel.validateSync();
-    var errors = [];
-
     return model
         .find({ username: user.username }) /* asyn call db just to check for user name duplication */
         .then((result) => {
-            /* NOT SUPPORTED YET
             if (result && result.length > 0) {
-                errors.push(errors.DUPLICATE_USERNAME);
+                throw [ errors.DUPLICATE_USERNAME ];
             }
 
-            if (validate.errors['password'].message) {
-                errors.push(errors.INVALID_PASSWORD);
-            }
+            return new model({
+                _id:       new mongoose.Types.ObjectId(),
+                username:  user.username,
+                password:  hash.sha512(user.password, user.username),
+                firstName: user.firstName, 
+                lastName:  user.lastName,
+                userType:  user.userType,
+            });
+        })
+        .then((userModel) => {
+            debug(`create(): creating user with model ${userModel.toString()}`);
 
-            if (validate.errors['userType'].message) {
-                errors.push(errors.INVALID_USER_TYPE);
-            }
-
-            if (errors.length > 0) {
-                throw { error: errors };
-            }
-            */
-
-            return userModel;
+            return userModel.save()
         });
 }
 
@@ -60,7 +54,10 @@ const authenticate = (user) => {
     debug('authenticate()');
 
     return model
-        .findOne({ username: user.username, password: user.password })
+        .findOne({
+            username: user.username,
+            password: hash.sha512(user.password, user.username)
+        })
         .then((result) => {
             return result;
         });
