@@ -41,7 +41,7 @@ const authenticate = (user) => {
         .then((result) => {
             return result;
         });
-}
+};
 
 module.exports = {
     model,
