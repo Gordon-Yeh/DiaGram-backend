@@ -1,10 +1,10 @@
 const { check, validationResult } = require('express-validator/check');
 
-let userSignup = [
+let userLogin = [
     check('username').exists().isString(),
     check('password').exists().isString(),
-]
+];
 
 module.exports = {
-    userSignup,
-}
+    userLogin,
+};

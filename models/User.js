@@ -1,6 +1,6 @@
 const debug = require('debug')('diagram:model:User');
 const mongoose = require('mongoose');
-const errors = require('../config/errorTypes.js');
+const errorTypes = require('../config/errorTypes.js');
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -26,33 +26,10 @@ const create = (user) => {
     debug('create()');
 
     let userModel = new model(user);
-    var validate = userModel.validateSync();
-    var errors = [];
+    let validate = userModel.validateSync();
 
-    return model
-        .find({ username: user.username }) /* asyn call db just to check for user name duplication */
-        .then((result) => {
-            /* NOT SUPPORTED YET
-            if (result && result.length > 0) {
-                errors.push(errors.DUPLICATE_USERNAME);
-            }
-
-            if (validate.errors['password'].message) {
-                errors.push(errors.INVALID_PASSWORD);
-            }
-
-            if (validate.errors['userType'].message) {
-                errors.push(errors.INVALID_USER_TYPE);
-            }
-
-            if (errors.length > 0) {
-                throw { error: errors };
-            }
-            */
-
-            return userModel;
-        });
-}
+    return userModel;
+};
 
 // TEMP: authentication function: checks if user with username and password
 // exists in database, returns user document if it does
@@ -64,10 +41,10 @@ const authenticate = (user) => {
         .then((result) => {
             return result;
         });
-}
+};
 
 module.exports = {
     model,
     create,
     authenticate,
-}
+};

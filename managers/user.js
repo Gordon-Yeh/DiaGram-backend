@@ -20,15 +20,15 @@ function signup(req, res, next) {
     AccessCode
         .exist(code)
         .then((userType) => {
-            console.log(userType);
             newUser.userType = userType;
             return User.create(newUser);
         })
         .then((userModel) => {
-            console.log(userModel);
+            console.log('save user');
             return userModel.save();
         })
         .then((userResult) => {
+            console.log('delete code');
             return AccessCode.deleteCode(code);
         })
         .then(() => {

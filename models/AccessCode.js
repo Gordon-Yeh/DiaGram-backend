@@ -1,6 +1,6 @@
 const debug = require('debug')('diagram:model:AccessCode');
 const mongoose = require('mongoose');
-const errors = require('../config/errorTypes.js');
+const errorTypes = require('../config/errorTypes.js');
 
 const accessCodeSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -27,20 +27,29 @@ function exist(code) {
             if (result) {
                 return result.userType;
             }
-            throw { errors: [errors.INVALID_ACCESS_CODE] };
+            throw { errors: [errorTypes.INVALID_ACCESS_CODE] };
         });
 }
 
+/**
+ * removes an access code from the db
+ * @param {String} code to delete
+ */
 function deleteCode(code) {
     debug('deleteCode()');
 
     model
         .findOneAndDelete({ accessCode: code })
-        .catch((err) => console.log(err));
+        .then((result) => {
+            if(!result) {
+                // Should not happen, this would mean a race condition deleting access code
+                throw {errors: [errorTypes.CODE_ALREADY_DELETED] };
+            }
+        });
 }
 
 module.exports = {
     model,
     exist,
     deleteCode,
-}
+};
