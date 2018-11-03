@@ -34,7 +34,7 @@ function signup(req, res, next) {
         .catch((err) => {
             debug(err);
 
-            res.status(500).json(err);
+            res.status(500).json({ errors: err });
         });
 }
 

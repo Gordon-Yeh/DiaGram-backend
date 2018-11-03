@@ -29,7 +29,7 @@ const create = (user) => {
         .find({ username: user.username }) /* asyn call db just to check for user name duplication */
         .then((result) => {
             if (result && result.length > 0) {
-                throw [ errors.DUPLICATE_USERNAME ];
+                throw [ errorTypes.DUPLICATE_USERNAME ];
             }
 
             return new model({
