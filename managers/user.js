@@ -20,19 +20,21 @@ function signup(req, res, next) {
     AccessCode
         .exist(code)
         .then((userType) => {
-            console.log(userType);
             newUser.userType = userType;
             return User.create(newUser);
         })
         .then((userResult) => {
+            debug('delete code');
+
             return AccessCode.deleteCode(code);
         })
         .then(() => {
             next(); //go to login
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
+            debug(err);
+
+            res.status(500).json({ errors: err });
         });
 }
 

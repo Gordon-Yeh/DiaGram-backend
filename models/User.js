@@ -1,6 +1,6 @@
 const debug = require('debug')('diagram:model:User');
 const mongoose = require('mongoose');
-const errors = require('../config/errorTypes.js');
+const errorTypes = require('../config/errorTypes.js');
 const hash = require('../utils/hash.js');
 
 const userSchema = mongoose.Schema({
@@ -18,9 +18,9 @@ const userSchema = mongoose.Schema({
 const model = mongoose.model('User', userSchema);
 
 /**
- * @return {Promise} resolve: User model
- *
- * @param {Object} user object containing the fields to create a User model
+ * @param {Object} user contans user info
+ * @return {Promise} resolves if the user is created successfully
+ *                   rejects if user creation fails
  */
 const create = (user) => {
     debug('create()');
@@ -29,14 +29,14 @@ const create = (user) => {
         .find({ username: user.username }) /* asyn call db just to check for user name duplication */
         .then((result) => {
             if (result && result.length > 0) {
-                throw [ errors.DUPLICATE_USERNAME ];
+                throw [ errorTypes.DUPLICATE_USERNAME ];
             }
 
             return new model({
                 _id:       new mongoose.Types.ObjectId(),
                 username:  user.username,
                 password:  hash.sha512(user.password, user.username),
-                firstName: user.firstName, 
+                firstName: user.firstName,
                 lastName:  user.lastName,
                 userType:  user.userType,
             });
@@ -44,7 +44,7 @@ const create = (user) => {
         .then((userModel) => {
             debug(`create(): creating user with model ${userModel.toString()}`);
 
-            return userModel.save()
+            return userModel.save();
         });
 }
 
@@ -61,10 +61,10 @@ const authenticate = (user) => {
         .then((result) => {
             return result;
         });
-}
+};
 
 module.exports = {
     model,
     create,
     authenticate,
-}
+};

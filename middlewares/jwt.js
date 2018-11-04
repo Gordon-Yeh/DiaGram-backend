@@ -2,8 +2,7 @@ const debug = require('debug')('diagram:middleware:jwt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 const errorTypes = require('../config/errorTypes');
-//TODO: this is duplicated right now, share this
-const SECRET_KEY = 'We have no idea what doctors or patients actually want';
+const env = require('../config/env.js').get();
 
 //TODO: combine these two?
 function verifyToken(req, res, next) {
@@ -21,7 +20,7 @@ function verifyToken(req, res, next) {
 }
 
 function verifyJWT(req, res, next) {
-    jwt.verify(req.token, SECRET_KEY, (err, payload) => {
+    jwt.verify(req.token, env.JWT_SECRET, (err, payload) => {
         if (err) {
             debug(`verifyJWT(): error ${JSON.stringify(err)}`);
             res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
@@ -48,4 +47,4 @@ function verifyJWT(req, res, next) {
 module.exports = {
     verifyToken,
     verifyJWT,
-}
+};
