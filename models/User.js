@@ -1,6 +1,7 @@
 const debug = require('debug')('diagram:model:User');
 const mongoose = require('mongoose');
 const errorTypes = require('../config/errorTypes.js');
+const hash = require('../utils/hash.js');
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -17,19 +18,35 @@ const userSchema = mongoose.Schema({
 const model = mongoose.model('User', userSchema);
 
 /**
- *
- * @return {Promise} resolve: User model
- *
- * @param {Object} user object containing the fields to create a User model
+ * @param {Object} user contans user info
+ * @return {Promise} resolves if the user is created successfully
+ *                   rejects if user creation fails
  */
 const create = (user) => {
     debug('create()');
 
-    let userModel = new model(user);
-    let validate = userModel.validateSync();
+    return model
+        .find({ username: user.username }) /* asyn call db just to check for user name duplication */
+        .then((result) => {
+            if (result && result.length > 0) {
+                throw [ errorTypes.DUPLICATE_USERNAME ];
+            }
 
-    return userModel;
-};
+            return new model({
+                _id:       new mongoose.Types.ObjectId(),
+                username:  user.username,
+                password:  hash.sha512(user.password, user.username),
+                firstName: user.firstName,
+                lastName:  user.lastName,
+                userType:  user.userType,
+            });
+        })
+        .then((userModel) => {
+            debug(`create(): creating user with model ${userModel.toString()}`);
+
+            return userModel.save();
+        });
+}
 
 // TEMP: authentication function: checks if user with username and password
 // exists in database, returns user document if it does
@@ -37,7 +54,10 @@ const authenticate = (user) => {
     debug('authenticate()');
 
     return model
-        .findOne({ username: user.username, password: user.password })
+        .findOne({
+            username: user.username,
+            password: hash.sha512(user.password, user.username)
+        })
         .then((result) => {
             return result;
         });

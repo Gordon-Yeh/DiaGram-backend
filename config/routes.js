@@ -20,7 +20,7 @@ router.get('/posts', jwt.verifyToken, jwt.verifyJWT, post.getPosts);
 router.post('/posts', jwt.verifyToken, jwt.verifyJWT, post.makePost);
 
 /* Sessions */
-router.post('/signup', user.signup, session.login);
+router.post('/signup', validator.userSignup, user.signup, session.login);
 router.post('/login', validator.userLogin, session.login);
 
 module.exports = router;

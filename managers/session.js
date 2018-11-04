@@ -43,6 +43,8 @@ function login(req, res) {
         }
     })
     .catch((err) => {
+        debug(`error: ${err}`);
+
         res.status(500).send(err);
     });
 }

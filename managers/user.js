@@ -23,20 +23,18 @@ function signup(req, res, next) {
             newUser.userType = userType;
             return User.create(newUser);
         })
-        .then((userModel) => {
-            console.log('save user');
-            return userModel.save();
-        })
         .then((userResult) => {
-            console.log('delete code');
+            debug('delete code');
+
             return AccessCode.deleteCode(code);
         })
         .then(() => {
             next(); //go to login
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
+            debug(err);
+
+            res.status(500).json({ errors: err });
         });
 }
 
