@@ -39,7 +39,7 @@ function login(req, res) {
                 }
             );
         } else {
-            res.status(401).send('Invalid user credentials');
+            res.status(401).send({ errors: [errorTypes.UNAUTHORIZED] });
         }
     })
     .catch((err) => {

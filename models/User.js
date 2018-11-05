@@ -52,7 +52,7 @@ const create = (user) => {
  * Checks username with hashed password in database
   *
  * @param {Object} user contans user info
- * @return true if username matches password 
+ * @return {Object} database user object if username matches password
  */
 const authenticate = (user) => {
     debug('authenticate()');
@@ -63,9 +63,7 @@ const authenticate = (user) => {
             password: hash.sha512(user.password, user.username)
         })
         .then((result) => {
-            if(result) {
-                return true;
-            }
+            return result;
         });
 };
 

@@ -9,16 +9,16 @@ function verifyJWT(req, res, next) {
 
     const bearerHeader = req.headers['authorization'];
     if(typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
+        var bearer = bearerHeader.split(' ');
+        var bearerToken = bearer[1];
     } else {
-        res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
+        res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
     }
 
     jwt.verify(bearerToken, env.JWT_SECRET, (err, payload) => {
         if (err) {
             debug(`verifyJWT(): error ${JSON.stringify(err)}`);
-            res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
+            res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
         } else {
             debug(`verifyJWT() payload: ${JSON.stringify(payload)}`);
             User
@@ -26,7 +26,7 @@ function verifyJWT(req, res, next) {
                 .findOne(payload.user)
                 .then((user) => {
                     if (!user) {
-                        res.status(403).send({ errors: [errorTypes.UNAUTHORIZED] });
+                        res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
                     } else {
                         req.user = user;
                         next();

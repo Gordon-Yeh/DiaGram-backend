@@ -2,10 +2,11 @@ const debug = require('debug')('diagram:manager:user');
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 const mongoose = require('mongoose');
+const { check, validationResult } = require('express-validator/check');
 
 function signup(req, res, next) {
     debug('signup()');
-    
+
     let errors = validationResult(req);
     if(!errors.isEmpty()) {
         res.status(400).json({ errors: errors.array() });
@@ -44,7 +45,23 @@ function signup(req, res, next) {
 }
 
 function getUser(req, res) {
-    res.status(200).send("this is just to make sure JWT works!");
+    let errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+    }
+
+    let username = req.query.username;
+
+    User.model
+        .findOne({ username: username })
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            debug(err);
+
+            res.status(500).json({ errors: err });
+        });
 }
 
 module.exports = {
