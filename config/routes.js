@@ -13,14 +13,14 @@ const validator = require('../middlewares/validation.js');
 const jwt = require('../middlewares/jwt.js');
 
 /* Users */
-router.get('/users', validator.validUser, jwt.verifyJWT, user.getUser);
+router.get('/users', jwt.verifyJWT, user.getUser);
 
 /* Posts */
 router.get('/posts', jwt.verifyJWT, post.getPosts);
 router.post('/posts', jwt.verifyJWT, post.makePost);
 
 /* Sessions */
-router.post('/signup', validator.validUserSignup, user.signup, session.login);
+router.post('/signup', validator.validUser, user.signup, session.login);
 router.post('/login', validator.validUserLogin, session.login);
 
 module.exports = router;

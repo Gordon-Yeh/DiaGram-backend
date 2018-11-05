@@ -18,7 +18,7 @@ const model = mongoose.model('AccessCode', accessCodeSchema);
  *      rejects: error
  * @param {String} code
  */
-function exist(code) {
+function valid(code) {
     debug('exist()');
 
     return model
@@ -26,8 +26,9 @@ function exist(code) {
         .then((result) => {
             if (result) {
                 return result.userType;
+            } else {
+                throw [ errorTypes.INVALID_ACCESS_CODE ];
             }
-            throw { errors: [errorTypes.INVALID_ACCESS_CODE] };
         });
 }
 
@@ -43,13 +44,13 @@ function deleteCode(code) {
         .then((result) => {
             if(!result) {
                 // Should not happen, this would mean a race condition deleting access code
-                throw {errors: [errorTypes.CODE_ALREADY_DELETED] };
+                throw [ errorTypes.CODE_ALREADY_DELETED ];
             }
         });
 }
 
 module.exports = {
     model,
-    exist,
+    valid,
     deleteCode,
 };

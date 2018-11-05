@@ -24,7 +24,7 @@ function signup(req, res, next) {
 
     // TODO: change respond with correct status code for different errors
     AccessCode
-        .exist(code)
+        .valid(code)
         .then((userType) => {
             newUser.userType = userType;
             return User.create(newUser);
@@ -40,7 +40,7 @@ function signup(req, res, next) {
         .catch((err) => {
             debug(err);
 
-            res.status(500).json({ errors: err });
+            res.status(400).json({ errors: err });
         });
 }
 

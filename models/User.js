@@ -5,7 +5,7 @@ const hash = require('../utils/hash.js');
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true},
     password: { type: String, required: true, select: false },
     userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
     firstName: { type: String },
@@ -30,16 +30,16 @@ const create = (user) => {
         .then((result) => {
             if (result && result.length > 0) {
                 throw [ errorTypes.DUPLICATE_USERNAME ];
+            } else {
+                return new model({
+                    _id:       new mongoose.Types.ObjectId(),
+                    username:  user.username,
+                    password:  hash.sha512(user.password, user.username),
+                    firstName: user.firstName,
+                    lastName:  user.lastName,
+                    userType:  user.userType,
+                });
             }
-
-            return new model({
-                _id:       new mongoose.Types.ObjectId(),
-                username:  user.username,
-                password:  hash.sha512(user.password, user.username),
-                firstName: user.firstName,
-                lastName:  user.lastName,
-                userType:  user.userType,
-            });
         })
         .then((userModel) => {
             debug(`create(): creating user with model ${userModel.toString()}`);
