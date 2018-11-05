@@ -21,7 +21,7 @@ function makePost(req, res, next) {
                     return Post.fetchOne({ _id: postObject._id });
                 })
                 .then((pt) => {
-                    res.json(pt);
+                    res.status(200).json(pt);
                 })
                 .catch((err) => {
                     debug(`makePost() CAUGHT ERROR ${err.toString()}`);

@@ -11,6 +11,17 @@ const accessCodeSchema = mongoose.Schema({
 
 const model = mongoose.model('AccessCode', accessCodeSchema);
 
+const create = (fields) => {
+    return new model({
+        _id:       new mongoose.Types.ObjectId(),
+        accessCode: fields.accessCode,
+        userType: fields.userType,
+    }).save()
+    .catch((err) => {
+        debug(err);
+    });
+}
+
 /**
  * checks to see if the string of code exists within db
  * @returns {Promise}
@@ -51,6 +62,7 @@ function deleteCode(code) {
 
 module.exports = {
     model,
+    create,
     valid,
     deleteCode,
 };

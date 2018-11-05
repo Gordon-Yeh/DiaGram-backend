@@ -17,7 +17,7 @@ const validUser = [
     check('password')
         .exists()
         .isLength({ min: 8, max: 64 }),
-        //.matches()
+        //.matches(add password requirements?)
     check('accessCode')
         .exists()
         .isLength(8),
@@ -26,5 +26,4 @@ const validUser = [
 module.exports = {
     validUserLogin,
     validUser,
-//    validPost,
 };

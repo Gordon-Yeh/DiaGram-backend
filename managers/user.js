@@ -55,7 +55,7 @@ function getUser(req, res) {
     User.model
         .findOne({ username: username })
         .then((result) => {
-            res.send(result);
+            res.status(200).send(result);
         })
         .catch((err) => {
             debug(err);
