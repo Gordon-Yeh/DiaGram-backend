@@ -5,6 +5,11 @@ const mongoose = require('mongoose');
 
 function signup(req, res, next) {
     debug('signup()');
+    
+    let errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+    }
 
     let newUser = {
         _id: new mongoose.Types.ObjectId(),

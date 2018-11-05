@@ -13,11 +13,11 @@ const validator = require('../middlewares/validation.js');
 const jwt = require('../middlewares/jwt.js');
 
 /* Users */
-router.get('/users', jwt.verifyToken, jwt.verifyJWT, user.getUser);
+router.get('/users', jwt.verifyJWT, user.getUser);
 
 /* Posts */
-router.get('/posts', jwt.verifyToken, jwt.verifyJWT, post.getPosts);
-router.post('/posts', jwt.verifyToken, jwt.verifyJWT, post.makePost);
+router.get('/posts', jwt.verifyJWT, post.getPosts);
+router.post('/posts', jwt.verifyJWT, post.makePost);
 
 /* Sessions */
 router.post('/signup', validator.userSignup, user.signup, session.login);

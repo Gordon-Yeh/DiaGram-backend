@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 app.use('/', routes);
 
 mongoose.connect(env.DB_URL, { useNewUrlParser: true });
+mongoose.set('useCreateIndex', true);
 
 app.listen(env.PORT, () => {
 	console.log(`Diagram API server listening on port ${env.PORT}!`);

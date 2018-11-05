@@ -48,8 +48,12 @@ const create = (user) => {
         });
 }
 
-// TEMP: authentication function: checks if user with username and password
-// exists in database, returns user document if it does
+/**
+ * Checks username with hashed password in database
+  *
+ * @param {Object} user contans user info
+ * @return true if username matches password 
+ */
 const authenticate = (user) => {
     debug('authenticate()');
 
@@ -59,7 +63,9 @@ const authenticate = (user) => {
             password: hash.sha512(user.password, user.username)
         })
         .then((result) => {
-            return result;
+            if(result) {
+                return true;
+            }
         });
 };
 

@@ -2,11 +2,23 @@ const debug = require('debug')('diagram:middleware:validation');
 const { check, validationResult } = require('express-validator/check');
 const errorTypes = require('../config/errorTypes.js');
 
-let userLogin = [
-    check('username').exists().isString(),
-    check('password').exists().isString(),
+const userLogin = [
+    check('username')
+        .exists(),
+    check('password')
+        .exists(),
 ];
 
+const userSignup = [
+    check('username')
+        .isLength({ min: 5, max: 32})
+        .isAlphanumeric(),
+    check('password')
+        .isLength({min: 8, max: 32}),
+        //.matches(add pw requirements?)
+];
+
+/*
 function userSignup(req, res, next) {
     debug('signup()');
 
@@ -34,6 +46,7 @@ function userSignup(req, res, next) {
         next();
     }
 }
+*/
 
 module.exports = {
     userLogin,
