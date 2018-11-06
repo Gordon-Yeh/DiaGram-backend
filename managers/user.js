@@ -2,15 +2,9 @@ const debug = require('debug')('diagram:manager:user');
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 const mongoose = require('mongoose');
-const { check, validationResult } = require('express-validator/check');
 
 function signup(req, res, next) {
     debug('signup()');
-
-    let errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-    }
 
     let newUser = {
         _id: new mongoose.Types.ObjectId(),
@@ -22,7 +16,6 @@ function signup(req, res, next) {
 
     let code = req.body.accessCode;
 
-    // TODO: change respond with correct status code for different errors
     AccessCode
         .valid(code)
         .then((userType) => {
@@ -45,11 +38,6 @@ function signup(req, res, next) {
 }
 
 function getUser(req, res) {
-    let errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-    }
-
     let username = req.query.username;
 
     User.model

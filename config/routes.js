@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const { check, validationResult } = require('express-validator/check');
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 
@@ -17,7 +16,7 @@ router.get('/users', jwt.verifyJWT, user.getUser);
 
 /* Posts */
 router.get('/posts', jwt.verifyJWT, post.getPosts);
-router.post('/posts', jwt.verifyJWT, post.makePost);
+router.post('/posts', validator.validPost, jwt.verifyJWT, post.makePost);
 
 /* Sessions */
 router.post('/signup', validator.validUser, user.signup, session.login);

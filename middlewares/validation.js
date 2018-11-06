@@ -1,29 +1,72 @@
 const debug = require('debug')('diagram:middleware:validation');
-const { check, validationResult } = require('express-validator/check');
 const errorTypes = require('../config/errorTypes.js');
 
-const validUserLogin = [
-    check('username')
-        .exists(),
-    check('password')
-        .exists(),
-];
+function validUserLogin(req, res, next) {
+    debug('validUserLogin');
 
-const validUser = [
-    check('username')
-        .exists()
-        .isLength({ min: 5, max: 32 })
-        .isAlphanumeric(),
-    check('password')
-        .exists()
-        .isLength({ min: 8, max: 64 }),
-        //.matches(add password requirements?)
-    check('accessCode')
-        .exists()
-        .isLength(8),
-];
+    let err = [];
+
+    if(typeof req.body.username !== 'string') {
+        debug('invalid username');
+
+        err.push(errorTypes.INVALID_USERNAME);
+    }
+
+    if (typeof req.body.password !== 'string') {
+        debug('invalid password');
+
+        err.push(errorTypes.INVALID_PASSWORD);
+    }
+
+    if (err.length > 0) {
+        res.status(400).json({ errors: err });
+    } else {
+        next();
+    }
+}
+
+function validUser(req, res, next) {
+        debug('validUser()');
+
+        let err = [];
+
+        let username = req.body.username;
+        let password = req.body.password;
+
+        // TODO: set better requirements
+        if (typeof username !== 'string' || username.length < 5 || username.length > 32) {
+            debug('invalid username');
+
+            err.push(errorTypes.INVALID_USERNAME);
+        }
+
+        if (typeof password !== 'string' || password.length < 8 || password.length > 64) {
+            debug('invalid password');
+
+            err.push(errorTypes.INVALID_PASSWORD);
+        }
+
+        if (err.length > 0) {
+            res.status(400).json({ errors: err });
+        } else {
+            next();
+        }
+}
+
+function validPost(req, res, next) {
+    debug('validPost()');
+
+    let err = [];
+
+    let title = req.body.title;
+    let body = req.body.body;
+
+    //TODO: add post validation?
+    next();
+}
 
 module.exports = {
     validUserLogin,
     validUser,
+    validPost,
 };

@@ -1,7 +1,6 @@
 const debug = require('debug')('diagram:manager:session');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js'); //TODO: move to model code
-const { check, validationResult } = require('express-validator/check');
 const env = require('../config/env.js').get();
 
 /**
@@ -9,11 +8,6 @@ const env = require('../config/env.js').get();
  */
 function login(req, res) {
     debug('login()');
-
-    let errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-    }
 
     let user = {
         username: req.body.username,
