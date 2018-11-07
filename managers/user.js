@@ -23,8 +23,6 @@ function signup(req, res, next) {
             return User.create(newUser);
         })
         .then((userResult) => {
-            debug('delete code');
-
             return AccessCode.deleteCode(code);
         })
         .then(() => {
@@ -38,10 +36,11 @@ function signup(req, res, next) {
 }
 
 function getUser(req, res) {
-    let username = req.query.username;
+    let user = req.user;
+    debug('getUser()');
 
     User.model
-        .findOne({ username: username })
+        .findOne(user)
         .then((result) => {
             res.status(200).send(result);
         })
