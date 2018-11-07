@@ -53,6 +53,8 @@ const create = (fields) => {
 const fetch = (query) => {
     return model
         .find(query)
+        .limit(20)
+        .sort({ updatedAt: -1 })
         .then((posts) => {
             return posts.map((pt) => ({
                 _id: pt._id,
