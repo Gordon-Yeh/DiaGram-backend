@@ -16,9 +16,8 @@ function signup(req, res, next) {
 
     let code = req.body.accessCode;
 
-    // TODO: change respond with correct status code for different errors
     AccessCode
-        .exist(code)
+        .valid(code)
         .then((userType) => {
             newUser.userType = userType;
             return User.create(newUser);
@@ -34,12 +33,23 @@ function signup(req, res, next) {
         .catch((err) => {
             debug(err);
 
-            res.status(500).json({ errors: err });
+            res.status(400).json({ errors: err });
         });
 }
 
 function getUser(req, res) {
-    res.status(200).send("this is just to make sure JWT works!");
+    let username = req.query.username;
+
+    User.model
+        .findOne({ username: username })
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((err) => {
+            debug(err);
+
+            res.status(500).json({ errors: err });
+        });
 }
 
 module.exports = {

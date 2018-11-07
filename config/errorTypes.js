@@ -13,6 +13,7 @@ const errors = {
 
     // Sessions
     UNAUTHORIZED: 'UNAUTHORIZED',
+    FORBIDDEN: 'FORBIDDEN',
     INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 };
 

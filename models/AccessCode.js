@@ -11,6 +11,17 @@ const accessCodeSchema = mongoose.Schema({
 
 const model = mongoose.model('AccessCode', accessCodeSchema);
 
+const create = (fields) => {
+    return new model({
+        _id:       new mongoose.Types.ObjectId(),
+        accessCode: fields.accessCode,
+        userType: fields.userType,
+    }).save()
+    .catch((err) => {
+        debug(err);
+    });
+};
+
 /**
  * checks to see if the string of code exists within db
  * @returns {Promise}
@@ -18,7 +29,7 @@ const model = mongoose.model('AccessCode', accessCodeSchema);
  *      rejects: error
  * @param {String} code
  */
-function exist(code) {
+function valid(code) {
     debug('exist()');
 
     return model
@@ -26,8 +37,9 @@ function exist(code) {
         .then((result) => {
             if (result) {
                 return result.userType;
+            } else {
+                throw [ errorTypes.INVALID_ACCESS_CODE ];
             }
-            throw { errors: [errorTypes.INVALID_ACCESS_CODE] };
         });
 }
 
@@ -43,13 +55,14 @@ function deleteCode(code) {
         .then((result) => {
             if(!result) {
                 // Should not happen, this would mean a race condition deleting access code
-                throw {errors: [errorTypes.CODE_ALREADY_DELETED] };
+                throw [ errorTypes.CODE_ALREADY_DELETED ];
             }
         });
 }
 
 module.exports = {
     model,
-    exist,
+    create,
+    valid,
     deleteCode,
 };

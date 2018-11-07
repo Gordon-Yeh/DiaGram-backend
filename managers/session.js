@@ -1,19 +1,14 @@
 const debug = require('debug')('diagram:manager:session');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js'); //TODO: move to model code
-const { check, validationResult } = require('express-validator/check');
 const env = require('../config/env.js').get();
+const errorTypes = require('../config/errorTypes');
 
 /**
  * Verifies user information with database
  */
 function login(req, res) {
     debug('login()');
-
-    let errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
-    }
 
     let user = {
         username: req.body.username,
@@ -39,12 +34,11 @@ function login(req, res) {
                 }
             );
         } else {
-            res.status(401).send('Invalid user credentials');
+            res.status(401).send({ errors: [errorTypes.UNAUTHORIZED] });
         }
     })
     .catch((err) => {
         debug(`error: ${err}`);
-
         res.status(500).send(err);
     });
 }
