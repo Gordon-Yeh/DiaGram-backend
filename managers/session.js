@@ -2,6 +2,7 @@ const debug = require('debug')('diagram:manager:session');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User.js'); //TODO: move to model code
 const env = require('../config/env.js').get();
+const errorTypes = require('../config/errorTypes');
 
 /**
  * Verifies user information with database

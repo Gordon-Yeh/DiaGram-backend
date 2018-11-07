@@ -20,7 +20,7 @@ const create = (fields) => {
     .catch((err) => {
         debug(err);
     });
-}
+};
 
 /**
  * checks to see if the string of code exists within db

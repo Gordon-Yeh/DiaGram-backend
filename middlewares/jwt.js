@@ -6,11 +6,12 @@ const env = require('../config/env.js').get();
 
 function verifyJWT(req, res, next) {
     debug(`verifyJWT()`);
+    var bearer, bearerToken;
 
     const bearerHeader = req.headers['authorization'];
     if(typeof bearerHeader !== 'undefined') {
-        var bearer = bearerHeader.split(' ');
-        var bearerToken = bearer[1];
+        bearer = bearerHeader.split(' ');
+        bearerToken = bearer[1];
     } else {
         res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
     }

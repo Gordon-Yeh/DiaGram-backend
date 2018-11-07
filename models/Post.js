@@ -50,7 +50,6 @@ const create = (fields) => {
     });
 };
 
-
 /**
  * Create a model that includes the fields
  * @returns {Promise} resolves a Post model
