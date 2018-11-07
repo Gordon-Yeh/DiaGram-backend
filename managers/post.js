@@ -1,5 +1,6 @@
 const debug = require('debug')('diagram:manager:Post');
 const Post = require('../models/Post.js');
+const User = require('../models/User.js');
 const errorTypes = require('../config/errorTypes');
 
 function makePost(req, res, next) {
@@ -18,6 +19,7 @@ function makePost(req, res, next) {
             return postModel
                 .save()
                 .then((postObject) => {
+                    User.updateFollowing(req.user._id, postObject._id);
                     return Post.fetchOne({ _id: postObject._id });
                 })
                 .then((pt) => {
@@ -36,23 +38,50 @@ function makePost(req, res, next) {
         });
 }
 
-// TODO: add filter query
-function getPosts(req, res) {
-    debug('getPosts()');
+/**
+ * Gets and sends back generic post feed
+ * @param  {Object} req the request
+ * @param  {Object} res the response
+ */
+function getPostFeed(req, res) {
+    debug('getPostFeed()');
 
     Post
         .fetch()
-        .then((pts) => {
-            res.json(pts);
+        .then((posts) => {
+            res.json(posts);
         })
         .catch((err) => {
-            debug(`makePost() CAUGHT ERROR ${err.toString()}`);
+            debug(`getPostFeed() CAUGHT ERROR ${err.toString()}`);
+
+            res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+        });
+}
+
+/**
+ * Gets and sends back all posts a certain user is following
+ * @param  {Object} req the request
+ * @param  {Object} res the response
+ */
+function getFollowedPosts(req, res) {
+    debug('getFollowedPosts()');
+
+    let query = { _id: { $in: req.user.following } };
+
+    Post
+    .fetch(query)
+        .then((posts) => {
+            res.json(posts);
+        })
+        .catch((err) => {
+            debug(`getFollowedPosts() CAUGHT ERROR ${err.toString()}`);
 
             res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
         });
 }
 
 module.exports = {
-    getPosts,
-    makePost
+    getPostFeed,
+    makePost,
+    getFollowedPosts,
 };

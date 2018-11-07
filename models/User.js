@@ -10,7 +10,9 @@ const userSchema = mongoose.Schema({
     userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
     firstName: { type: String },
     lastName: { type: String },
-    // following: [mongoose.Schema.Types.ObjectId], not used for now
+    following: [
+        { type: mongoose.Schema.Types.ObjectId }
+    ],
     createdAt: { type : Date, default: Date.now, select: false },
     updatedAt: { type : Date, default: Date.now, select: false }
 });
@@ -18,6 +20,7 @@ const userSchema = mongoose.Schema({
 const model = mongoose.model('User', userSchema);
 
 /**
+ * Creates a new user
  * @param {Object} user contans user info
  * @return {Promise} resolves if the user is created successfully
  *                   rejects if user creation fails
@@ -50,7 +53,6 @@ const create = (user) => {
 
 /**
  * Checks username with hashed password in database
-  *
  * @param {Object} user contans user info
  * @return {Object} database user object if username matches password
  */
@@ -67,8 +69,32 @@ const authenticate = (user) => {
         });
 };
 
+/**
+ * Updates a user's followed posts list
+ * @param  {ObjectId} userId posting user's ID
+ * @param  {ObjectId} postId user's post's ID
+ * @return {Object} User before adding new post to followed list
+ */
+const updateFollowing = (userId, postId) => {
+    debug('updateFollowing()');
+    debug(`userId: ${userId}`);
+    debug(`postId: ${postId}`);
+
+    return model
+        .findOneAndUpdate(
+            { _id: userId },
+            { $push: { following: postId } }
+        )
+        .then((result) => {
+            debug(result);
+
+            return(result);
+        });
+};
+
 module.exports = {
     model,
     create,
     authenticate,
+    updateFollowing,
 };

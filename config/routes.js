@@ -15,7 +15,8 @@ const jwt = require('../middlewares/jwt.js');
 router.get('/users', jwt.verifyJWT, user.getUser);
 
 /* Posts */
-router.get('/posts', jwt.verifyJWT, post.getPosts);
+router.get('/posts', jwt.verifyJWT, post.getPostFeed);
+router.get('/posts/followed', jwt.verifyJWT, post.getFollowedPosts);
 router.post('/posts', validator.validPost, jwt.verifyJWT, post.makePost);
 
 /* Sessions */
