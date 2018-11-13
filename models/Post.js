@@ -50,14 +50,11 @@ const create = (fields) => {
     });
 };
 
-/**
- * Create a model that includes the fields
- * @returns {Promise} resolves a Post model
- * @param {Object} fields requires: { title, body, userId, userType }
- */
 const fetch = (query) => {
     return model
         .find(query)
+        .limit(20)
+        .sort({ updatedAt: -1 })
         .then((posts) => {
             return posts.map((pt) => ({
                 _id: pt._id,
