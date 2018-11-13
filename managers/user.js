@@ -12,6 +12,9 @@ function signup(req, res, next) {
         password: req.body.password,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        medications: req.body.medications,
+        recentProcedures: req.body.recentProcedures,
+        conditions: req.body.conditions,
     };
 
     let code = req.body.accessCode;
@@ -23,6 +26,8 @@ function signup(req, res, next) {
             return User.create(newUser);
         })
         .then((userResult) => {
+            debug('delete code');
+
             return AccessCode.deleteCode(code);
         })
         .then(() => {
@@ -35,23 +40,72 @@ function signup(req, res, next) {
         });
 }
 
-function getUser(req, res) {
-    let user = req.user;
-    debug('getUser()');
+function viewProfile(req, res) {
+    debug('viewProfile()');
+    let userId = req.params.user_id;
+    let userType = req.user.userType;
+
+    if(userType === 'doctor') {
+        User.model
+            .findById(userId, '-following', (err, result) => {
+                if(err) {
+                    debug(err);
+
+                    res.status(500).json({ errors: err });
+                } else {
+                    res.status(200).send(result);
+                }
+            });
+    } else if(userType === 'patient') {
+        User.model
+            .findById(userId, '-firstName -lastName -username -following', (err, result) => {
+                if(err) {
+                    debug(err);
+
+                    res.status(500).json({ errors: err });
+                } else {
+                    res.status(200).send(result);
+                }
+            });
+    } else {
+        res.status(400).json({ errors: errorTypes.INVALID_USER_TYPE});
+    }
+}
+
+function viewOwnProfile(req, res) {
+    debug('viewOwnProfile()');
 
     User.model
-        .findOne(user)
-        .then((result) => {
-            res.status(200).send(result);
-        })
-        .catch((err) => {
-            debug(err);
+        .findById(req.user._id, (err, result) => {
+            if(err) {
+                debug(err);
 
-            res.status(500).json({ errors: err });
+                res.status(500).json({ errors: err });
+            } else {
+                res.status(200).send(result);
+            }
+        });
+}
+
+function editProfile(req, res) {
+    debug('editProfile()');
+
+    //TODO: finish
+    User.model
+        .findByIdAndUpdate(req.user._id, (err, result) => {
+            if(err) {
+                debug(err);
+
+                res.status(500).json({ errors: err });
+            } else {
+                res.status(200).send(result);
+            }
         });
 }
 
 module.exports = {
     signup,
-    getUser,
+    viewOwnProfile,
+    viewProfile,
+    editProfile,
 };

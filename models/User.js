@@ -10,6 +10,9 @@ const userSchema = mongoose.Schema({
     userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
     firstName: { type: String },
     lastName: { type: String },
+    medications: { type: String },
+    recentProcedures: { type: String },
+    conditions: { type: String },
     following: [
         { type: mongoose.Schema.Types.ObjectId }
     ],
@@ -35,12 +38,15 @@ const create = (user) => {
                 throw [ errorTypes.DUPLICATE_USERNAME ];
             } else {
                 return new model({
-                    _id:       new mongoose.Types.ObjectId(),
-                    username:  user.username,
-                    password:  hash.sha512(user.password, user.username),
-                    firstName: user.firstName,
-                    lastName:  user.lastName,
-                    userType:  user.userType,
+                    _id:              new mongoose.Types.ObjectId(),
+                    username:         user.username,
+                    password:         hash.sha512(user.password, user.username),
+                    firstName:        user.firstName,
+                    lastName:         user.lastName,
+                    userType:         user.userType,
+                    medications:      user.medications,
+                    recentProcedures: user.recentProcedures,
+                    conditions:       user.conditions,
                 });
             }
         })
