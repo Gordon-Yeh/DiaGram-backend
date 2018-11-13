@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
-    "dev": "DEBUG=diagram:* JWT_SECRET=test-secret  DB_URL='mongodb+srv://diagram_server:DoctorWho@cluster0-k8yai.mongodb.net/DiaGramDB?retryWrites=true' nodemon",
-    "test": "jest"
+    "dev": "nodemon",
+    "test": "jest",
+    "coverage": "jest --collectCoverageFrom=./**.js --coverage ./"
   },
   "repository": {
     "type": "git",
@@ -30,9 +31,12 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "debug": "^4.1.0",
     "jest": "^23.6.0",
     "nodemon": "^1.18.4",
+    "superagent": "^4.0.0-beta.5",
     "supertest": "^3.3.0"
   }
 }
