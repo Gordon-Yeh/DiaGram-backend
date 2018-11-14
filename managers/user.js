@@ -50,22 +50,18 @@ function viewProfile(req, res) {
             .findById(userId, '-following', (err, result) => {
                 if(err) {
                     debug(err);
-
                     res.status(500).json({ errors: err });
-                } else {
-                    res.status(200).send(result);
                 }
+                res.status(200).send(result);
             });
     } else if(userType === 'patient') {
         User.model
             .findById(userId, '-firstName -lastName -username -following', (err, result) => {
                 if(err) {
                     debug(err);
-
                     res.status(500).json({ errors: err });
-                } else {
-                    res.status(200).send(result);
                 }
+                res.status(200).send(result);
             });
     } else {
         res.status(400).json({ errors: errorTypes.INVALID_USER_TYPE});
@@ -79,27 +75,22 @@ function viewOwnProfile(req, res) {
         .findById(req.user._id, (err, result) => {
             if(err) {
                 debug(err);
-
                 res.status(500).json({ errors: err });
-            } else {
-                res.status(200).send(result);
             }
+            res.status(200).send(result);
         });
 }
 
 function editProfile(req, res) {
     debug('editProfile()');
 
-    //TODO: finish
     User.model
-        .findByIdAndUpdate(req.user._id, (err, result) => {
+        .findByIdAndUpdate(req.user._id, req.body, {new: true}, (err, result) => {
             if(err) {
                 debug(err);
-
                 res.status(500).json({ errors: err });
-            } else {
-                res.status(200).send(result);
             }
+            res.status(200).send(result);
         });
 }
 

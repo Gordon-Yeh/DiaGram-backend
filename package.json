@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
-    "dev": "DEBUG=diagram:* JWT_SECRET=test-secret  DB_URL='mongodb+srv://diagram_server:DoctorWho@cluster0-k8yai.mongodb.net/DiaGramDB?retryWrites=true' nodemon",
+    "dev": "DEBUG=diagram:* JWT_SECRET=test-secret  DB_URL='mongodb+srv://diagram_server:DoctorWho@cluster0-k8yai.mongodb.net/test?retryWrites=true' nodemon",
     "test": "jest"
   },
   "repository": {
