@@ -2,6 +2,7 @@ const debug = require('debug')('diagram:manager:user');
 const User = require('../models/User.js');
 const AccessCode = require('../models/AccessCode.js');
 const mongoose = require('mongoose');
+const errorTypes = require('../config/errorTypes.js');
 
 function signup(req, res, next) {
     debug('signup()');
