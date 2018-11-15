@@ -10,6 +10,8 @@ const errors = {
     // Posts
     EMPTY_TITLE: 'EMPTY_TITLE',
     EMPTY_BODY: 'EMPTY_BODY',
+    WRONG_USER: 'WRONG_USER',
+    POST_NOT_FOUND: 'POST_NOT_FOUND',
 
     // Sessions
     UNAUTHORIZED: 'UNAUTHORIZED',

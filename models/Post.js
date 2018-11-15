@@ -9,7 +9,12 @@ const postSchema = mongoose.Schema({
     body: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     userType: types.userType,
-    comments: [],
+    comments: [{
+        body: { type: String },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
+        createdAt: { type : Date, default: Date.now }
+    }],
     createdAt: { type : Date, default: Date.now },
     updatedAt: { type : Date, default: Date.now, index: true },
     private: { type: Boolean, default: false }
@@ -88,9 +93,26 @@ const fetchOne = (query) => {
         });
 };
 
+const addComment = (comment) => {
+    return model
+        .findOneAndUpdate(
+            { _id: comment.postId },
+            { $push: { comments: comment } }
+        )
+        .then((result) => {
+            debug(result);
+            return result;
+        })
+        .catch((err) => {
+            debug(err);
+            return err;
+        });
+}
+
 module.exports = {
     model,
     create,
     fetch,
-    fetchOne
+    fetchOne,
+    addComment,
 };
