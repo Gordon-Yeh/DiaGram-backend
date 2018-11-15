@@ -69,12 +69,43 @@ function getFollowedPosts(req, res) {
     let query = { _id: { $in: req.user.following } };
 
     Post
-    .fetch(query)
-        .then((posts) => {
-            res.json(posts);
+        .fetch(query)
+            .then((posts) => {
+                res.json(posts);
+            })
+            .catch((err) => {
+                debug(`getFollowedPosts() CAUGHT ERROR ${err.toString()}`);
+
+                res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+            });
+}
+
+/**
+ * Adds a comment to the post specified in the parameters of the request, with
+ * the text in the body of the request
+ * @param  {Object} req the request
+ * @param  {Object} res the response
+ */
+function makeComment(req, res) {
+    debug('makeComment()');
+
+    let comment = {
+        body: req.body.body,
+        userId: req.user._id,
+        userType: req.user.userType,
+        postId: req.params.post_id,
+    };
+
+    Post
+        .addComment(comment)
+        .then((post) => {
+            if(comment.userType === 'doctor') {
+                updateFollowing(comment.userId, comment.postId);
+            }
+            res.json(post);
         })
         .catch((err) => {
-            debug(`getFollowedPosts() CAUGHT ERROR ${err.toString()}`);
+            debug(`makeComment() CAUGHT ERROR ${err.toString()}`);
 
             res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
         });
@@ -82,6 +113,7 @@ function getFollowedPosts(req, res) {
 
 module.exports = {
     getPostFeed,
-    makePost,
     getFollowedPosts,
+    makePost,
+    makeComment,
 };

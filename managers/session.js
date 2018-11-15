@@ -38,7 +38,7 @@ function login(req, res) {
         }
     })
     .catch((err) => {
-        debug(`error: ${err}`);
+        debug(`CAUGHT ERROR ${err.toString()}`);
         res.status(500).send(err);
     });
 }

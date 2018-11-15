@@ -12,7 +12,6 @@ router.post('/codes', (req, res) => {
         userType: req.query.userType,
     };
     debug(`add access code: ${accessCode.toString()}`);
-    debug(accessCode);
 
     AccessCode.create(accessCode)
         .then((result) => {

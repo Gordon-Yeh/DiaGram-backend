@@ -19,7 +19,8 @@ router.put('/users', jwt.verifyJWT, user.editProfile);
 /* Posts */
 router.get('/posts', jwt.verifyJWT, post.getPostFeed);
 router.get('/posts/followed', jwt.verifyJWT, post.getFollowedPosts);
-router.post('/posts', validator.validPost, jwt.verifyJWT, post.makePost);
+router.post('/posts', jwt.verifyJWT, post.makePost);
+router.post('/posts/:post_id/comments', jwt.verifyJWT, validator.validComment, post.makeComment);
 
 /* Sessions */
 router.post('/signup', validator.validUser, user.signup, session.login);
