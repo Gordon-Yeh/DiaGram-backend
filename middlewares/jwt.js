@@ -6,7 +6,6 @@ const env = require('../config/env.js').get();
 
 function verifyJWT(req, res, next) {
     debug('verifyJWT()');
-    debug(req.body);
     var bearer, bearerToken;
 
     const bearerHeader = req.headers['authorization'];

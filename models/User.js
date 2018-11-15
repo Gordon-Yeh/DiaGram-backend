@@ -83,17 +83,12 @@ const authenticate = (user) => {
  */
 const updateFollowing = (userId, postId) => {
     debug('updateFollowing()');
-    debug(`userId: ${userId}`);
-    debug(`postId: ${postId}`);
-
     return model
         .findOneAndUpdate(
             { _id: userId },
             { $push: { following: postId } }
         )
         .then((result) => {
-            debug(result);
-
             return(result);
         });
 };

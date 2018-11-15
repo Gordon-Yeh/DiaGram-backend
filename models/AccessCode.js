@@ -18,7 +18,7 @@ const create = (fields) => {
         userType: fields.userType,
     }).save()
     .catch((err) => {
-        debug(err);
+        debug(`CAUGHT ERROR ${err.toString()}`);
     });
 };
 

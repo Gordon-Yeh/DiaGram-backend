@@ -27,15 +27,13 @@ function signup(req, res, next) {
             return User.create(newUser);
         })
         .then((userResult) => {
-            debug('delete code');
-
             return AccessCode.deleteCode(code);
         })
         .then(() => {
             next(); //go to login
         })
         .catch((err) => {
-            debug(err);
+            debug(`CAUGHT ERROR ${err.toString()}`);
 
             res.status(400).json({ errors: err });
         });
@@ -50,7 +48,8 @@ function viewProfile(req, res) {
         User.model
             .findById(userId, '-following', (err, result) => {
                 if(err) {
-                    debug(err);
+                    debug(`CAUGHT ERROR ${err.toString()}`);
+
                     res.status(500).json({ errors: err });
                 }
                 res.status(200).send(result);
@@ -59,7 +58,7 @@ function viewProfile(req, res) {
         User.model
             .findById(userId, '-firstName -lastName -username -following', (err, result) => {
                 if(err) {
-                    debug(err);
+                    debug(`CAUGHT ERROR ${err.toString()}`);
                     res.status(500).json({ errors: err });
                 }
                 res.status(200).send(result);
@@ -75,7 +74,7 @@ function viewOwnProfile(req, res) {
     User.model
         .findById(req.user._id, (err, result) => {
             if(err) {
-                debug(err);
+                debug(`CAUGHT ERROR ${err.toString()}`);
                 res.status(500).json({ errors: err });
             }
             res.status(200).send(result);
@@ -88,7 +87,7 @@ function editProfile(req, res) {
     User.model
         .findByIdAndUpdate(req.user._id, req.body, {new: true}, (err, result) => {
             if(err) {
-                debug(err);
+                debug(`CAUGHT ERROR ${err.toString()}`);
                 res.status(500).json({ errors: err });
             }
             res.status(200).send(result);
