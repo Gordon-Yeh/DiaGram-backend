@@ -107,7 +107,7 @@ const addComment = (comment) => {
             debug(err);
             return err;
         });
-}
+};
 
 module.exports = {
     model,

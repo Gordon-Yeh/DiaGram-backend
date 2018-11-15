@@ -100,7 +100,7 @@ function makeComment(req, res) {
         .addComment(comment)
         .then((post) => {
             if(comment.userType === 'doctor') {
-                updateFollowing(comment.userId, comment.postId);
+                User.updateFollowing(comment.userId, comment.postId);
             }
             res.json(post);
         })
