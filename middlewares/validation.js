@@ -18,7 +18,7 @@ function validUserLogin(req, res, next) {
     if (errors.length > 0) {
         debug(`CAUGHT ERROR ${errors.toString()}`);
 
-        res.status(400).json({ errors: err });
+        res.status(400).json({ errors: errors });
     } else {
         next();
     }
@@ -43,7 +43,7 @@ function validUser(req, res, next) {
 
         if (errors.length > 0) {
             debug(`CAUGHT ERROR ${errors.toString()}`);
-            
+
             res.status(400).json({ errors: errors });
         } else {
             next();
