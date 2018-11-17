@@ -1,8 +1,8 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const AccessCode = require('../models/AccessCode.js');
-const User = require('../models/User.js');
-const app = require('../app.js');
+const AccessCode = require('../../models/AccessCode.js');
+const User = require('../../models/User.js');
+const app = require('../../app.js');
 
 describe('POST: /signup', () => {
     let testAccessCode = {

@@ -1,8 +1,8 @@
 // reference: http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/
 const request = require('supertest');
 const mongoose = require('mongoose');
-const User = require('../models/User.js');
-const app = require('../app.js');
+const User = require('../../models/User.js');
+const app = require('../../app.js');
 
 describe('POST: /login', () => {
     let testUser = {
