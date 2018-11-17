@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
-    "dev": "DEBUG=diagram:* JWT_SECRET=test-secret  DB_URL='mongodb+srv://diagram_server:DoctorWho@cluster0-k8yai.mongodb.net/test?retryWrites=true' nodemon",
-    "test": "jest"
+    "dev": "nodemon",
+    "test": "jest",
+    "coverage": "jest --collectCoverageFrom=./**.js --coverage ./"
   },
   "repository": {
     "type": "git",
