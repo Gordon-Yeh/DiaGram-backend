@@ -97,7 +97,8 @@ const addComment = (comment) => {
     return model
         .findOneAndUpdate(
             { _id: comment.postId },
-            { $push: { comments: comment } }
+            { $push: { comments: comment } },
+            { new: true }
         )
         .then((result) => {
             debug(result);

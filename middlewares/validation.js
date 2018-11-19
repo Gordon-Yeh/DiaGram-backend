@@ -65,9 +65,8 @@ function validComment(req, res, next) {
             errors.push(errorTypes.POST_NOT_FOUND);
             res.status(400).json({ errors: errors });
         }
-
         //if user is not post owner, refuse comment
-        if(req.user.userType === 'patient' && result.userId.toString() !== req.user._id.toString()) {
+        else if(req.user.userType === 'patient' && result.userId.toString() !== req.user._id.toString()) {
             errors.push(errorTypes.WRONG_USER);
             res.status(403).json({ errors: errors });
         }
