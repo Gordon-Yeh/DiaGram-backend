@@ -7,8 +7,7 @@
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
     "dev": "nodemon",
-    "test": "jest",
-    "coverage": "jest --collectCoverageFrom=./**.js --coverage ./"
+    "test": "jest"
   },
   "repository": {
     "type": "git",

@@ -43,7 +43,6 @@ describe('POST: /posts', () => {
                 test_doctor_jwt = results[1];
             })
             .catch((err) => {
-                console.log(err);
                 // oops db setup failed
             });
     });
@@ -119,7 +118,36 @@ describe('POST: /posts', () => {
                     });
             });
     });
+
+    it('should respond with status 200 and user\'s followed posts', () => {
+        expect(test_patient_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+
+        return request(app)
+            .get('/posts')
+            .set('Authorization', `Bearer: ${test_patient_jwt}`)
+            .send()
+            .then((res) => {
+                expect(res.statusCode).toBe(200);
+
+            });
+    });
+
+    it('should respond with status 200 and all current posts', () => {
+        expect(test_doctor_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+
+        return request(app)
+            .get('/posts/followed')
+            .set('Authorization', `Bearer: ${test_doctor_jwt}`)
+            .send()
+            .then((res) => {
+                expect(res.statusCode).toBe(200);
+            });
+    })
 });
+
+const createPost = (post) => {
+    return Post.model.create(post);
+}
 
 const deletePost = (post) => {
     return Post.model.deleteMany(post);
