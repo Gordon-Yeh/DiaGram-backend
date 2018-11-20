@@ -30,6 +30,7 @@ const model = mongoose.model('Post', postSchema);
 const create = (fields) => {
     //debug(`create(): fields = ${JSON.stringify(fields)}`);
 
+    // TODO: should call model.save() here
     return new Promise((resolve, reject) => {
         let errors = [];
 

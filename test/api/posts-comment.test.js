@@ -83,16 +83,29 @@ describe('GET: /posts', () => {
             });
     });
 
-    it('should respond with status 200 and all current posts', () => {
-        expect(test_patient0_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+    it('should respond with status 200 with the updated post information, \n store comment in the post, and update the doctor\'s \n followed posts if everything is valid', () => {
+        expect(test_doctor_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
-            .get('/posts')
-            .set('Authorization', `Bearer: ${test_patient0_jwt}`)
-            .send()
+            .post(`/posts/${testPosts[0]._id}/comments`)
+            .set('Authorization', `Bearer: ${test_doctor_jwt}`)
+            .send(testComment)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body).toHaveLength(2);
+                expect(res.body).toHaveProperty('_id');
+                expect(res.body.comments[0]).toHaveProperty('_id');
+                expect(res.body.comments[0]).toHaveProperty('body', testComment.body);
+                //expect(res.body.comments[0]).toHaveProperty('userId', testDoctor._id);
+                expect(res.body.comments[0]).toHaveProperty('userType', testDoctor.userType);
+                expect(res.body.comments[0]).toHaveProperty('createdAt');
+            })
+            //check that user's followed posts list was updated
+            .then(() => {
+                return dbHelper
+                    .checkUser(testDoctor)
+                    .then((user) => {
+                        expect(user.following).toContain(testPosts[0]._id);
+                    });
             });
     });
 });

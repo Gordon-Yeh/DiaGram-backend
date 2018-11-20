@@ -11,7 +11,6 @@ describe('POST: /posts', () => {
         firstName: 'Bob',
         lastName: 'Ross',
         userType: 'patient',
-        accessCode: 'test-patient-access-code'
     };
     let testPost = {
         title: 'make-post test post',

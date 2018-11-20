@@ -10,6 +10,21 @@ const clearDB = () => {
     ]);
 };
 
+const createPost = (user, post) => {
+    return Post
+        .create({
+            ...post,
+            userType: user.userType,
+            userId: user._id
+        })
+        .then((model) => {
+            return model
+                .save()
+                // need model info later so pass it on
+                .then(() => { return model });
+        });
+}
+
 const deletePost = (post) => {
     return Post.model.deleteMany(post);
 };
@@ -40,6 +55,7 @@ const addAccessCode = (code, userType) => {
 module.exports = {
     clearDB,
     //posts
+    createPost,
     deletePost,
     checkPostExist,
     // user

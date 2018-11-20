@@ -83,16 +83,16 @@ describe('GET: /posts', () => {
             });
     });
 
-    it('should respond with status 200 and all current posts', () => {
+    it('should respond with status 200 and user\'s followed posts', () => {
         expect(test_patient0_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
-            .get('/posts')
+            .get('/posts/followed')
             .set('Authorization', `Bearer: ${test_patient0_jwt}`)
             .send()
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body).toHaveLength(2);
+                expect(res.body).toHaveLength(1);
             });
     });
 });
