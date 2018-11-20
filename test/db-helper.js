@@ -45,11 +45,8 @@ const createUser = (user) => {
     return User.create(user);
 }
 
-const addAccessCode = (code, userType) => {
-    return AccessCode.create({
-        code,
-        userType
-    });
+const createAccessCode = (codeBody) => {
+    return AccessCode.create(codeBody);
 }
 
 module.exports = {
@@ -63,5 +60,5 @@ module.exports = {
     deleteUser,
     checkUser,
     // access code
-    addAccessCode
+    createAccessCode
 };

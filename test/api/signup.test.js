@@ -1,12 +1,8 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
-const AccessCode = require('../../models/AccessCode.js');
-const User = require('../../models/User.js');
 const app = require('../../app.js');
+const dbHelper = require('../db-helper.js');
 
-const testName = 'POST: /signup';
-
-describe(testName, () => {
+describe('POST: /signup', () => {
     let testAccessCode1 = {
         accessCode: 'signup_test_code_1',
         userType: 'patient',
@@ -25,23 +21,20 @@ describe(testName, () => {
     };
 
     beforeAll(() => {
-        return Promise.all([
-            AccessCode.create(testAccessCode1),
-            AccessCode.create(testAccessCode2)
-        ])
-        .catch((err) => {
-            console.log(testName, err);
-            // if we hit this point this could mean:
-            // 1) the access code already exist in DB because somehow the last test didnt consume
-            // 2) DB connrection failed, we should stop the whole test at this point TODO:
-        });
-    });
-
-    afterAll(() => {
-        return Promise.all([
-            User.model.findOneAndDelete({ username: testUser.username }),
-            AccessCode.deleteCode(testAccessCode2.accessCode)
-        ]); 
+        return dbHelper
+            .clearDB()
+            .then(() => {
+                return Promise.all([
+                    dbHelper.createAccessCode(testAccessCode1),
+                    dbHelper.createAccessCode(testAccessCode2)
+                ]);
+            })
+            .catch((err) => {
+                console.log(err);
+                // if we hit this point this could mean:
+                // 1) the access code already exist in DB because somehow the last test didnt consume
+                // 2) DB connrection failed, we should stop the whole test at this point TODO:
+            });
     });
 
     it('should respond with status: 400, errors: [INVALID_ACCESS_CODE] \n if access code not in db', () => {

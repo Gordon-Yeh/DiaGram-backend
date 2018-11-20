@@ -1,8 +1,7 @@
 // reference: http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/
 const request = require('supertest');
-const mongoose = require('mongoose');
-const User = require('../../models/User.js');
 const app = require('../../app.js');
+const dbHelper = require('../db-helper.js');
 
 describe('POST: /login', () => {
     let testUser = {
@@ -14,18 +13,16 @@ describe('POST: /login', () => {
     };
 
     beforeAll(() => {
-        return User
-            .create(testUser)
+        return dbHelper
+            .clearDB()
+            .then(() => {
+                return dbHelper.createUser(testUser);
+            })
             .catch((err) => {
                 // If we hit this point, then that means the testUser wasn't deleted properly last time
                 // testUser already in DB just ignore this error
             });
     });
-
-    afterAll(() => {
-        return User.model.findOneAndDelete({ username: testUser.username });
-    });
-
 
     it('should respond with status: 400, errors: [INVALID_USERNAME, INVALID_PASSWORD] \n if body is empty', () => {
         return request(app)
