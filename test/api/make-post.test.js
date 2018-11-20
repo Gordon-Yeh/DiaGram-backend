@@ -1,12 +1,10 @@
 const request = require('supertest');
-const AccessCode = require('../../models/AccessCode.js');
-const User = require('../../models/User.js');
-const Post = require('../../models/Post.js');
 const app = require('../../app.js');
+const dbHelper = require('../db-helper.js');
+const jwtHelper = require('../jwt-helper.js');
 
 describe('POST: /posts', () => {
     let test_patient_jwt;
-    let test_post_id;
     let testPatient = {
         username: 'get-post-test-patient',
         password: 'test-password',
@@ -21,23 +19,21 @@ describe('POST: /posts', () => {
     };
 
     beforeAll(() => {
-        return Promise.all([
-                createUser(testPatient),
-                deletePost(testPost) // just in case the test post wasn't deleted from last execution
-            ])
-            .then((results) => {
-                test_patient_jwt = results[0].jwt;
+        return dbHelper
+            .clearDB()
+            .then(() => {
+                return dbHelper.createUser(testPatient);
+            })
+            .then((user) => {
+                return jwtHelper.getJwt(user);
+            })
+            .then((jwt) => {
+                test_patient_jwt = jwt;
             })
             .catch((err) => {
                 // oops db setup failed
+                console.log('POST: /posts', err);
             });
-    });
-
-    afterAll(() => {
-        return Promise.all([
-            deleteUser(testPatient),
-            deletePost(testPost)
-        ]);
     });
 
     it('should respond with status 401, errors: [UNAUTHORIZED] \n if the jwt is invalid', () => {
@@ -71,60 +67,11 @@ describe('POST: /posts', () => {
                 expect(res.body).toHaveProperty('private');
             })
             .then(() => {
-                return dbCheckPostExist(testPost)
+                return dbHelper
+                    .checkPostExist(testPost)
                     .then((post) => {
                         expect(post).toBeDefined();
                     });
             });
     });
 });
-
-const createPost = (jwt, post) => {
-    return request(app)
-        .post('/posts')
-        .set('Authorization', `Bearer: ${jwt}`)
-        .send(post);
-}
-
-const deletePost = (post) => {
-    return Post.model.deleteMany(post);
-};
-
-const dbCheckPostExist = (post) => {
-    return Post.model.findOne(post);
-};
-
-const deleteUser = (user) => {
-    return User.model.deleteMany({ username: user.username });
-};
-
-const checkUser = (user) => {
-    return User.model.findOne({ username: user.username });
-};
-
-const createUser = (user) => {
-    let testAccessCode = {
-        accessCode: user.accessCode,
-        userType: user.userType
-    };
-
-    return AccessCode
-        .create(testAccessCode)
-        .catch((err) => {
-            // failing at this point mostly like mean the access code wasn't consumed from last test
-            // which doesn't effect our test, ignore error
-            // return this because the next promise link is dependent of a result
-            return testAccessCode;
-        })
-        .then((result) => {
-            return request(app)
-                .post('/signup')
-                .send({
-                    ...user,
-                    accessCode: result.accessCode
-                })
-                .then((res) => {
-                    return { jwt: res.body.jwt, userId: res.body.user._id };
-                });
-        });
-};
