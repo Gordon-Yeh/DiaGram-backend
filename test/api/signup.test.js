@@ -4,11 +4,18 @@ const AccessCode = require('../../models/AccessCode.js');
 const User = require('../../models/User.js');
 const app = require('../../app.js');
 
-describe('POST: /signup', () => {
-    let testAccessCode = {
-        accessCode: 'signup_test_code',
+const testName = 'POST: /signup';
+
+describe(testName, () => {
+    let testAccessCode1 = {
+        accessCode: 'signup_test_code_1',
         userType: 'patient',
     };
+
+    let testAccessCode2 = {
+        accessCode: 'signup_test_code_2',
+        userType: 'patient',
+    }
 
     let testUser = {
         username: "testuser1",
@@ -18,17 +25,23 @@ describe('POST: /signup', () => {
     };
 
     beforeAll(() => {
-        return AccessCode
-            .create(testAccessCode)
-            .catch((err) => {
-                // if we hit this point this could mean:
-                // 1) the access code already exist in DB because somehow the last test didnt consume
-                // 2) DB connrection failed, we should stop the whole test at this point TODO:
-            });
+        return Promise.all([
+            AccessCode.create(testAccessCode1),
+            AccessCode.create(testAccessCode2)
+        ])
+        .catch((err) => {
+            console.log(testName, err);
+            // if we hit this point this could mean:
+            // 1) the access code already exist in DB because somehow the last test didnt consume
+            // 2) DB connrection failed, we should stop the whole test at this point TODO:
+        });
     });
 
     afterAll(() => {
-        return User.model.findOneAndDelete({ username: testUser.username });
+        return Promise.all([
+            User.model.findOneAndDelete({ username: testUser.username }),
+            AccessCode.deleteCode(testAccessCode2.accessCode)
+        ]); 
     });
 
     it('should respond with status: 400, errors: [INVALID_ACCESS_CODE] \n if access code not in db', () => {
@@ -42,7 +55,21 @@ describe('POST: /signup', () => {
             .send(body)
             .then((res) => {
                 expect(res.statusCode).toBe(400);
-                expect(res.body.errors).toContain('INVALID_ACCESS_CODE');
+                expect(res.body).toHaveProperty('errors', ['INVALID_ACCESS_CODE']);
+            });
+    });
+
+    it('should respond with status: 400, errors: [INVALID_USERNAME, INVALID_PASSWORD] \n if username and password arent provided in body', () => {
+        let body = {
+            accessCode: testAccessCode1.accessCode
+        };
+
+        return request(app)
+            .post("/signup")
+            .send(body)
+            .then((res) => {
+                expect(res.statusCode).toBe(400);
+                expect(res.body).toHaveProperty('errors', ['INVALID_USERNAME', 'INVALID_PASSWORD']);
             });
     });
 
@@ -52,7 +79,7 @@ describe('POST: /signup', () => {
 
         let body = {
             ...testUser,
-            accessCode: testAccessCode.accessCode
+            accessCode: testAccessCode1.accessCode
         };
 
         return request(app)
@@ -68,7 +95,26 @@ describe('POST: /signup', () => {
                 expect(res.body.user).toHaveProperty('username', testUser.username);
                 expect(res.body.user).toHaveProperty('firstName', testUser.firstName);
                 expect(res.body.user).toHaveProperty('lastName', testUser.lastName);
-                expect(res.body.user).toHaveProperty('userType', testAccessCode.userType);
+                expect(res.body.user).toHaveProperty('userType', testAccessCode1.userType);
+            });
+    });
+
+
+    it('should response with status: 400, errors: [DUPLICATE_USERNAME]  \n if the username is already taken', () => {
+        // TODO: possibly use "jsonwebtoken" library to do this check
+        const jwtRegex = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
+
+        let body = {
+            ...testUser,
+            accessCode: testAccessCode2.accessCode
+        };
+
+        return request(app)
+            .post("/signup")
+            .send(body)
+            .then((res) => {
+                expect(res.statusCode).toBe(400);
+                expect(res.body).toHaveProperty('errors', ['DUPLICATE_USERNAME']);
             });
     });
 });
