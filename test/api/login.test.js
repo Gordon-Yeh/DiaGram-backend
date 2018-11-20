@@ -25,8 +25,8 @@ describe('POST: /login', () => {
     afterAll(() => {
         return User.model.findOneAndDelete({ username: testUser.username });
     });
-    
-    
+
+
     it('should respond with status: 400, errors: [INVALID_USERNAME, INVALID_PASSWORD] \n if body is empty', () => {
         return request(app)
             .post("/login")

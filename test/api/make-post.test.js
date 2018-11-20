@@ -110,14 +110,14 @@ describe('GET: /posts', () => {
     let testComment = {
         body: 'this is an add comment test'
     };
-    let testPost = [];
+    let testPosts = [];
 
     beforeAll(() => {
         return Promise.all([
                 createUser(testPatient0),
                 createUser(testPatient1),
                 createUser(testDoctor),
-                deletePost(testPost) // just in case the test post wasn't deleted from last execution
+                //deletePost(testPost[0]) // just in case the test post wasn't deleted from last execution
             ])
             .then((results) => {
                 test_patient0_jwt = results[0].jwt;
@@ -130,10 +130,9 @@ describe('GET: /posts', () => {
                     })
                     .then((post) => {
                         console.log(`TEST POST ID ${i}: ${post}`);
-                        testPost[i] = post;
+                        testPosts[i] = post;
                     })
                     .catch((err) => {
-                        console.log('ERROR???');
                         console.log(err);
                     });
 
@@ -150,7 +149,7 @@ describe('GET: /posts', () => {
             deleteUser(testPatient0),
             deleteUser(testPatient1),
             deleteUser(testDoctor),
-            deletePost(testPost[0])
+            deletePost(testPosts[0])
         ]);
     });
 
@@ -158,7 +157,7 @@ describe('GET: /posts', () => {
         expect(test_doctor_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
-            .post(`/posts/${testPost[0]._id}/comments`)
+            .post(`/posts/${testPosts[0]._id}/comments`)
             .set('Authorization', `Bearer: ${test_doctor_jwt}`)
             .send(testComment)
             .then((res) => {
@@ -174,7 +173,7 @@ describe('GET: /posts', () => {
             .then(() => {
                 return checkUser(testDoctor)
                     .then((user) => {
-                        expect(user.following).toContain(testPost[0]._id);
+                        expect(user.following).toContain(testPosts[0]._id);
                     });
             });
     });
