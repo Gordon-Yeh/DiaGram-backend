@@ -52,7 +52,7 @@ function validUser(req, res, next) {
 
 function validComment(req, res, next) {
     debug('validComment()');
-
+  
     let errors = [];
 
     Post.model.findById(req.params.post_id, (error, result) => {
