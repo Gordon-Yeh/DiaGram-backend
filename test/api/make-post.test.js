@@ -6,7 +6,6 @@ const app = require('../../app.js');
 
 describe('POST: /posts', () => {
     let test_patient_jwt;
-    let test_doctor_jwt;
     let test_post_id;
     let testPatient = {
         username: 'get-post-test-patient',
@@ -16,31 +15,18 @@ describe('POST: /posts', () => {
         userType: 'patient',
         accessCode: 'test-patient-access-code'
     };
-    let testDoctor = {
-        username: 'get-post-test-doctor',
-        password: 'test-password',
-        firstName: 'Bob',
-        lastName: 'Dylan',
-        userType: 'doctor',
-        accessCode: 'test-doctor-access-code'
-    };
     let testPost = {
         title: 'make-post test post',
         body: 'this is a make post test'
-    }
-    let testComment = {
-        body: 'this is an add comment test'
-    }
+    };
 
     beforeAll(() => {
         return Promise.all([
                 createUser(testPatient),
-                createUser(testDoctor),
                 deletePost(testPost) // just in case the test post wasn't deleted from last execution
             ])
             .then((results) => {
-                test_patient_jwt = results[0];
-                test_doctor_jwt = results[1];
+                test_patient_jwt = results[0].jwt;
             })
             .catch((err) => {
                 // oops db setup failed
@@ -50,7 +36,6 @@ describe('POST: /posts', () => {
     afterAll(() => {
         return Promise.all([
             deleteUser(testPatient),
-            deleteUser(testDoctor),
             deletePost(testPost)
         ]);
     });
@@ -84,7 +69,6 @@ describe('POST: /posts', () => {
                 expect(res.body).toHaveProperty('userType', testPatient.userType);
                 expect(res.body).toHaveProperty('comments', []);
                 expect(res.body).toHaveProperty('private');
-                test_post_id = res.body._id;
             })
             .then(() => {
                 return dbCheckPostExist(testPost)
@@ -93,12 +77,88 @@ describe('POST: /posts', () => {
                     });
             });
     });
+});
+
+describe('GET: /posts', () => {
+    let test_patient0_jwt;
+    let test_patient1_jwt;
+    let test_doctor_jwt;
+    let testPatient0 = {
+        username: 'get-post-test-patient0',
+        password: 'test-password',
+        firstName: 'Bob',
+        lastName: 'Ross',
+        userType: 'patient',
+        accessCode: 'test-patient0-access-code'
+    };
+    let testPatient1 = {
+        username: 'get-post-test-patient1',
+        password: 'test-password',
+        firstName: 'Bob',
+        lastName: 'Dylan',
+        userType: 'patient',
+        accessCode: 'test-patient1-access-code'
+    };
+    let testDoctor = {
+        username: 'get-post-test-doctor',
+        password: 'test-password',
+        firstName: 'Bob',
+        lastName: 'Dylan',
+        userType: 'doctor',
+        accessCode: 'test-doctor-access-code'
+    };
+    let testComment = {
+        body: 'this is an add comment test'
+    };
+    let testPost = [];
+
+    beforeAll(() => {
+        return Promise.all([
+                createUser(testPatient0),
+                createUser(testPatient1),
+                createUser(testDoctor),
+                deletePost(testPost) // just in case the test post wasn't deleted from last execution
+            ])
+            .then((results) => {
+                test_patient0_jwt = results[0].jwt;
+                test_patient1_jwt = results[1].jwt;
+                test_doctor_jwt = results[2].jwt;
+                for(let i = 0; i < 2; i++) {
+                    createPost(results[i].jwt, {
+                        title: 'get-post test post',
+                        body: 'this is a get post test'
+                    })
+                    .then((post) => {
+                        console.log(`TEST POST ID ${i}: ${post}`);
+                        testPost[i] = post;
+                    })
+                    .catch((err) => {
+                        console.log('ERROR???');
+                        console.log(err);
+                    });
+
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // oops db setup failed
+            });
+    });
+
+    afterAll(() => {
+        return Promise.all([
+            deleteUser(testPatient0),
+            deleteUser(testPatient1),
+            deleteUser(testDoctor),
+            deletePost(testPost[0])
+        ]);
+    });
 
     it('should respond with status 200 with the updated post information, \n store comment in the post, and update the doctor\'s \n followed posts if everything is valid', () => {
         expect(test_doctor_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
-            .post(`/posts/${test_post_id}/comments`)
+            .post(`/posts/${testPost[0]._id}/comments`)
             .set('Authorization', `Bearer: ${test_doctor_jwt}`)
             .send(testComment)
             .then((res) => {
@@ -114,39 +174,44 @@ describe('POST: /posts', () => {
             .then(() => {
                 return checkUser(testDoctor)
                     .then((user) => {
-                        expect(user.following).toContain(test_post_id);
+                        expect(user.following).toContain(testPost[0]._id);
                     });
             });
     });
 
     it('should respond with status 200 and user\'s followed posts', () => {
-        expect(test_patient_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+        expect(test_patient0_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
             .get('/posts')
-            .set('Authorization', `Bearer: ${test_patient_jwt}`)
+            .set('Authorization', `Bearer: ${test_patient0_jwt}`)
             .send()
             .then((res) => {
                 expect(res.statusCode).toBe(200);
+                expect(res.body).toHaveLength(1);
 
             });
     });
 
     it('should respond with status 200 and all current posts', () => {
-        expect(test_doctor_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+        expect(test_patient0_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
             .get('/posts/followed')
-            .set('Authorization', `Bearer: ${test_doctor_jwt}`)
+            .set('Authorization', `Bearer: ${test_patient0_jwt}`)
             .send()
             .then((res) => {
                 expect(res.statusCode).toBe(200);
+                expect(res.body).toHaveLength(2);
             });
-    })
+    });
 });
 
-const createPost = (post) => {
-    return Post.model.create(post);
+const createPost = (jwt, post) => {
+    return request(app)
+        .post('/posts')
+        .set('Authorization', `Bearer: ${jwt}`)
+        .send(post);
 }
 
 const deletePost = (post) => {
@@ -187,7 +252,7 @@ const createUser = (user) => {
                     accessCode: result.accessCode
                 })
                 .then((res) => {
-                    return res.body.jwt;
+                    return { jwt: res.body.jwt, userId: res.body.user._id };
                 });
         });
 };

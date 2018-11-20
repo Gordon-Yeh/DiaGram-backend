@@ -28,7 +28,7 @@ const model = mongoose.model('Post', postSchema);
  * @param {Object} fields requires: { title, body, userId, userType }
  */
 const create = (fields) => {
-    debug(`create(): fields = ${JSON.stringify(fields)}`);
+    //debug(`create(): fields = ${JSON.stringify(fields)}`);
 
     return new Promise((resolve, reject) => {
         let errors = [];
