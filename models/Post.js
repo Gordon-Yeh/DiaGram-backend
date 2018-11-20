@@ -28,8 +28,9 @@ const model = mongoose.model('Post', postSchema);
  * @param {Object} fields requires: { title, body, userId, userType }
  */
 const create = (fields) => {
-    debug(`create(): fields = ${JSON.stringify(fields)}`);
+    //debug(`create(): fields = ${JSON.stringify(fields)}`);
 
+    // TODO: should call model.save() here
     return new Promise((resolve, reject) => {
         let errors = [];
 
@@ -97,7 +98,8 @@ const addComment = (comment) => {
     return model
         .findOneAndUpdate(
             { _id: comment.postId },
-            { $push: { comments: comment } }
+            { $push: { comments: comment } },
+            { new: true }
         )
         .then((result) => {
             debug(result);

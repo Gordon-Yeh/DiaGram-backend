@@ -13,13 +13,13 @@ function verifyJWT(req, res, next) {
         bearer = bearerHeader.split(' ');
         bearerToken = bearer[1];
     } else {
-        res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
+        res.status(401).send({ errors: [errorTypes.UNAUTHORIZED] });
     }
 
     jwt.verify(bearerToken, env.JWT_SECRET, (err, payload) => {
         if (err) {
             debug(`verifyJWT(): error ${JSON.stringify(err)}`);
-            res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
+            res.status(401).send({ errors: [errorTypes.UNAUTHORIZED] });
         } else {
             debug(`verifyJWT() payload: ${JSON.stringify(payload)}`);
             User
@@ -27,7 +27,7 @@ function verifyJWT(req, res, next) {
                 .findOne(payload.user)
                 .then((user) => {
                     if (!user) {
-                        res.status(403).send({ errors: [errorTypes.FORBIDDEN] });
+                        res.status(401).send({ errors: [errorTypes.UNAUTHORIZED] });
                     } else {
                         req.user = user;
                         next();

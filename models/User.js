@@ -79,14 +79,15 @@ const authenticate = (user) => {
  * Updates a user's followed posts list
  * @param  {ObjectId} userId posting user's ID
  * @param  {ObjectId} postId user's post's ID
- * @return {Object} User before adding new post to followed list
+ * @return {Object} User after adding new post to followed list
  */
 const updateFollowing = (userId, postId) => {
     debug('updateFollowing()');
     return model
         .findOneAndUpdate(
             { _id: userId },
-            { $push: { following: postId } }
+            { $push: { following: postId } },
+            { new: true }
         )
         .then((result) => {
             return(result);

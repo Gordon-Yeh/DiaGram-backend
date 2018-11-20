@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "production": "forever start --minUptime 1000 --spinSleepTime 1000 index.js",
-    "dev": "DEBUG=diagram:* JWT_SECRET=test-secret  DB_URL='mongodb+srv://diagram_server:DoctorWho@cluster0-k8yai.mongodb.net/test?retryWrites=true' nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon",
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -25,12 +25,14 @@
     "express-validator": "^5.3.0",
     "jsonwebtoken": "^8.3.0",
     "mongodb": "^3.1.8",
-    "mongoose": "^5.3.4",
+    "mongoose": "^5.2.8",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "debug": "^4.1.0",
-    "nodemon": "^1.18.4"
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.4",
+    "supertest": "^3.3.0"
   }
 }
