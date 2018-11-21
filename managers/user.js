@@ -86,6 +86,8 @@ function editProfile(req, res) {
 
     User.model
         .findByIdAndUpdate(req.user._id, req.body, {new: true}, (err, result) => {
+                                    // TODO: ^ need to error check req.body or else ANYTHING
+                                    //   can be updated, including _id, and username
             if(err) {
                 debug(`CAUGHT ERROR ${err.toString()}`);
                 res.status(500).json({ errors: err });

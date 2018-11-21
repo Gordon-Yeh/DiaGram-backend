@@ -9,8 +9,11 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
     * [Get Post](#get-post)
     * [Make Post](#make-post)
     * [Commenting](#commenting)
-    * [Get Followed Post](#get-followed-post)
-3. [Users](#third-example)
+    * [Get Followed Post](#get-followed-posts)
+3. [Users](#users)
+    * [View Profile](#view-profile)
+    * [Edit Profile](#edit-profile)
+    * [View Other Profile](#view-other-profile)
 
 # Session
 ## Signup
@@ -78,7 +81,13 @@ Grant session to a user given the username and password
         jwt: <String>,
         user: {
             _id: <String>,
-            username: <String>
+            username: <String>,
+            userType: <String>,
+            firstName: <String>,
+            lastName: <String>,
+            medications: <String>,
+            recentProcedures: <String>,
+            conditions: <String>,
         }
     }
     `
@@ -293,6 +302,142 @@ Get posts that the user is followering
       },
       ...
     ]
+    ```
+
+# Users
+## View Profile
+gets the user's own profile information
+
+* **URL**
+
+  /users
+
+* **Method:**
+
+  `GET`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+    }
+    ```
+
+## Edit Profile
+edit the user's own profile information
+
+* **URL**
+
+  /users
+
+* **Method:**
+
+  `PUTs`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+* **Body**
+
+   **Required:**
+   ```
+   {
+      firstName: <String>
+      lastName: <String>
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+   }
+   ```
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+    }
+    ```
+
+* **Error Response:**
+
+  * **Code:** 403 UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+
+## View Other Profile
+get the profile information of another user
+
+* **URL**
+
+  /users/:user_id
+
+* **Method:**
+
+  `GET`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+
+    **`If viewer is a doctor`**
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+    }
+    ```
+  
+    **`If viewer is a patient`**
+    ```
+    {
+      _id: <String>
+      userType: enum { patient, doctor },
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+    }
     ```
 
 * **Error Response:**
