@@ -1,9 +1,19 @@
 # DiaGram API Server
-To run the server locally, run: <br />
-`npm start`<br />
+This is the API Node.js server code for the app DiaGram written for CPEN-321<br />
 
-**Signup**
-----
+# Table of Contents
+1. [Session](#session)  
+    * [Signup](#signup)
+    * [Login](#login)
+2. [Posts](#posts)  
+    * [Get Post](#get-post)
+    * [Make Post](#make-post)
+    * [Commenting](#commenting)
+    * [Get Followed Post](#get-followed-post)
+3. [Users](#third-example)
+
+# Session
+## Signup
   Creates a user
 
 * **URL**
@@ -41,8 +51,7 @@ To run the server locally, run: <br />
     **Content:** <br />
     `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_PASSWORD" ] }`
 
-**Login**
-----
+## Login
 Grant session to a user given the username and password
 
 * **URL**
@@ -79,9 +88,8 @@ Grant session to a user given the username and password
     **Content:** <br />
     `{ errors : [ "INVALID_CREDENTIALS" ] }`
 
-
-**Get Post**
-----
+# Posts
+## Get Post
 Get posts for app feed
 
 * **URL**
@@ -108,29 +116,32 @@ Get posts for app feed
         _id: <String>,
         tite: <String>,
         body: <String>,
+        userId: <String>,
         userType: enum { patient, doctor },
         private: <Boolean>
         comments: [
           {
-            _id: [included: if userType == doctor] ,
-            userType: enum { patient, doctor },
             body: <String>,
+            userId: <String>
+            userType: enum { patient, doctor },
+            createdAt: <Timestamp>
           },
           ...
         ]
+        createdAt: <Timestamp>
+        updatedAt: <Timestamp>
       },
       ...
     ]
     ```
+
 * **Error Response:**
 
   * **Code:** 403 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
-
-**Make Post**
-----
+## Make Post
 Make a new post
 
 * **URL**
@@ -167,11 +178,15 @@ Make a new post
       _id: <String>,
       tite: <String>,
       body: <String>,
+      userId: <String>,
       userType: enum { patient, doctor },
-      private: <Boolean>
-      comments: []
+      private: <Boolean>,
+      comments: [],
+      createdAt: <Timestamp>
+      updatedAt: <Timestamp>
     }
-    ```
+    ```    
+
 
 * **Error Response:**
 
@@ -183,8 +198,110 @@ Make a new post
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
-**Common Error Response**
-----
+## Commenting
+commenting on a post
+
+* **URL**
+
+  /posts/:post_id/comments
+
+* **Method:**
+
+  `POST`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+*  **URL Body**
+
+   **Required:**
+
+   `body: <String>` <br />
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+    ```
+    {
+      _id: <String>,
+      tite: <String>,
+      body: <String>,
+      userId: <String>,
+      userType: enum { patient, doctor },
+      private: <Boolean>,
+      comments: [ {newly added comment} ],
+      createdAt: <Timestamp>
+      updatedAt: <Timestamp>
+    }
+    ```    
+
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** <br />
+    `{ errors : [ "POST_NOT_FOUND" ] }`
+
+  * **Code:** 403 UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED", "WRONG_USER" ] }`
+
+## Get Followed Posts
+Get posts that the user is followering
+
+* **URL**
+
+  /posts/followed
+
+* **Method:**
+
+  `GET`
+
+* **URL HEADER**
+
+   **Required:**
+  
+  `Authorization: "Bearer ${jwt}"`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+    ```
+    [
+      {
+        _id: <String>,
+        tite: <String>,
+        body: <String>,
+        userId: <String>,
+        userType: enum { patient, doctor },
+        private: <Boolean>
+        comments: [
+          {
+            body: <String>,
+            userId: <String>
+            userType: enum { patient, doctor },
+            createdAt: <Timestamp>
+          },
+          ...
+        ]
+        createdAt: <Timestamp>
+        updatedAt: <Timestamp>
+      },
+      ...
+    ]
+    ```
+
+* **Error Response:**
+
+  * **Code:** 403 UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+# Common Error Response
 * **INTERNAL SERVER ERROR** <br />
 happens when there is something wrong with the server internally
   * **Code:** 500 <br />
