@@ -4,7 +4,6 @@ const jwtHelper = require('../jwt-helper.js');
 const app = require('../../app.js');
 
 describe('GET: /posts', () => {
-    const ROUTE = '/posts';
     let test_patient0_jwt;
     let test_patient1_jwt;
     let testPatient0 = {
@@ -21,9 +20,7 @@ describe('GET: /posts', () => {
         lastName: 'Dylan',
         userType: 'patient',
     };
-    let testComment = {
-        body: 'this is an add comment test'
-    };
+
     let testPosts = [];
 
     beforeAll(() => {
@@ -93,7 +90,42 @@ describe('GET: /posts', () => {
             .send()
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body).toHaveLength(1);
-            });
+                expect(res.body).toHaveLength(0);
+            })
+            .then(() => {
+                return dbHelper.updateUser(testPatient1, { 
+                    following: [testPosts[0]._id] 
+                });
+            })
+            .then(() => {
+                return request(app)
+                    .get('/posts/followed')
+                    .set('Authorization', `Bearer: ${test_patient1_jwt}`)
+                    .send()
+                    .then((res) => {
+                        expect(res.statusCode).toBe(200);
+                        expect(res.body).toHaveLength(1);
+                        expect(res.body[0]).toHaveProperty('_id', testPosts[0]._id.toString());
+                    })
+            })
+            .then(() => {
+                return dbHelper.updateUser(testPatient1, {
+                    following: [testPosts[0]._id, testPosts[1]._id]
+                });
+            })
+            .then(() => {
+                return request(app)
+                    .get('/posts/followed')
+                    .set('Authorization', `Bearer: ${test_patient1_jwt}`)
+                    .send()
+                    .then((res) => {
+                        expect(res.statusCode).toBe(200);
+                        expect(res.body).toHaveLength(2);
+
+                        let followedPostIds = res.body.map(post => post._id);
+                        expect(followedPostIds).toContain(testPosts[0]._id.toString());
+                        expect(followedPostIds).toContain(testPosts[1]._id.toString());
+                    })
+            })
     });
 });

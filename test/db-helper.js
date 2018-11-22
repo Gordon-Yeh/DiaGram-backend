@@ -17,13 +17,11 @@ const createPost = (user, post) => {
             userType: user.userType,
             userId: user._id
         })
-        .then((model) => {
-            User.updateFollowing(user._id, model._id);
-            return model
+        .then((postModel) => {
+            return postModel
                 .save()
-                // need model info later so pass it on
-                .then(() => {
-                    return model;
+                .then((post) => {
+                    return post;
                 });
         });
 }
@@ -48,9 +46,14 @@ const createUser = (user) => {
     return User.create(user);
 }
 
+const updateUser = (user, update) => {
+    return User.model.updateOne({ _id: user._id }, update);
+}
+
 const createAccessCode = (codeBody) => {
     return AccessCode.create(codeBody);
 }
+
 
 module.exports = {
     clearDB,
@@ -62,6 +65,7 @@ module.exports = {
     createUser,
     deleteUser,
     checkUser,
+    updateUser,
     // access code
     createAccessCode
 };
