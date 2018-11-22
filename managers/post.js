@@ -10,6 +10,7 @@ function makePost(req, res, next) {
         .create({
             title: req.body.title,
             body: req.body.body,
+            private: req.body.private,
             userId: req.user._id,
             userType: req.user.userType
         })

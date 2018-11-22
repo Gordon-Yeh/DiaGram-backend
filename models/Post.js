@@ -50,6 +50,7 @@ const create = (fields) => {
             _id: new mongoose.Types.ObjectId(),
             title: fields.title,
             body: fields.body,
+            private: !!fields.private,
             userId: fields.userId,
             userType: fields.userType,
         }));
