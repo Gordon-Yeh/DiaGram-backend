@@ -4,9 +4,6 @@ const jwtHelper = require('../jwt-helper.js');
 const app = require('../../app.js');
 
 describe('GET: /posts', () => {
-    const ROUTE = '/posts';
-    let test_patient0_jwt;
-    let test_patient1_jwt;
     let test_doctor_jwt;
     let testPatient0 = {
         username: 'get-post-test-patient0',
@@ -104,8 +101,33 @@ describe('GET: /posts', () => {
                 return dbHelper
                     .checkUser(testDoctor)
                     .then((user) => {
+                        expect(user.following).toHaveLength(1);
                         expect(user.following).toContain(testPosts[0]._id);
                     });
-            });
+            })
+            .then(() => {
+                return request(app)
+                    .post(`/posts/${testPosts[1]._id}/comments`)
+                    .set('Authorization', `Bearer: ${test_doctor_jwt}`)
+                    .send(testComment)
+                    .then((res) => {
+                        expect(res.statusCode).toBe(200);
+                        expect(res.body).toHaveProperty('_id');
+                        expect(res.body.comments[0]).toHaveProperty('_id');
+                        expect(res.body.comments[0]).toHaveProperty('body', testComment.body);
+                        //expect(res.body.comments[0]).toHaveProperty('userId', testDoctor._id);
+                        expect(res.body.comments[0]).toHaveProperty('userType', testDoctor.userType);
+                        expect(res.body.comments[0]).toHaveProperty('createdAt');
+                    })
+                    .then(() => {
+                        return dbHelper
+                            .checkUser(testDoctor)
+                            .then((user) => {
+                                expect(user.following).toHaveLength(2);
+                                expect(user.following).toContain(testPosts[0]._id);
+                                expect(user.following).toContain(testPosts[1]._id);
+                            });
+                    });
+            })
     });
 });

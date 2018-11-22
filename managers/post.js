@@ -112,7 +112,11 @@ function makeComment(req, res) {
         .addComment(comment)
         .then((post) => {
             if(comment.userType === 'doctor') {
-                User.updateFollowing(comment.userId, comment.postId);
+                return User
+                    .updateFollowing(comment.userId, comment.postId)
+                    .then(() => {
+                        res.json(post);
+                    });
             }
             res.json(post);
         })
