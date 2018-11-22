@@ -4,7 +4,7 @@ const app = require('../../app.js');
 const dbHelper = require('../db-helper.js');
 const jwtHelper = require('../jwt-helper.js');
 
-describe('GET: /users', () => {
+describe('PUT: /users', () => {
     let test_patient_jwt;
     let testPatient = {
         username: 'get-post-test-patient',
@@ -31,19 +31,7 @@ describe('GET: /users', () => {
             })
             .catch((err) => {
                 // oops db setup failed
-                console.log('GET: /users', err);
-            });
-    });
-
-    it('should respond with status: 200, and return own profile', () => {
-        return request(app)
-            .get("/users")
-            .set('Authorization', `Bearer: ${test_patient_jwt}`)
-            .then((res) => {
-                expect(res.statusCode).toBe(200);
-                expect(res.body).toHaveProperty('firstName', testPatient.firstName);
-                expect(res.body).toHaveProperty('lastName', testPatient.lastName);
-                expect(res.body).toHaveProperty('username', testPatient.username);
+                console.log('PUT: /users', err);
             });
     });
 

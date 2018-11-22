@@ -18,10 +18,13 @@ const createPost = (user, post) => {
             userId: user._id
         })
         .then((model) => {
+            User.updateFollowing(user._id, model._id);
             return model
                 .save()
                 // need model info later so pass it on
-                .then(() => { return model });
+                .then(() => {
+                    return model;
+                });
         });
 }
 
