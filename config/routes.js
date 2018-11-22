@@ -12,7 +12,6 @@ const validator = require('../middlewares/validation.js');
 const jwt = require('../middlewares/jwt.js');
 
 /* Users */
-router.get('/users', jwt.verifyJWT, user.viewOwnProfile);
 router.get('/users/:user_id', jwt.verifyJWT, user.viewProfile);
 router.put('/users', jwt.verifyJWT, user.editProfile);
 

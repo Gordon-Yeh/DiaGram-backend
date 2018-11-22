@@ -46,8 +46,20 @@ function makePost(req, res, next) {
 function getPostFeed(req, res) {
     debug('getPostFeed()');
 
+    let query = { };
+
+    if(req.query.post_id) {
+       query = { _id: req.query.post_id };
+    }
+
+    if(req.user.userType === 'patient') {
+        query.private = false;
+    }
+
+    debug(query);
+
     Post
-        .fetch()
+        .fetch(query)
         .then((posts) => {
             res.json(posts);
         })

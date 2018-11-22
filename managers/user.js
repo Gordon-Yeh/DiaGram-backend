@@ -68,19 +68,6 @@ function viewProfile(req, res) {
     }
 }
 
-function viewOwnProfile(req, res) {
-    debug('viewOwnProfile()');
-
-    User.model
-        .findById(req.user._id, (err, result) => {
-            if(err) {
-                debug(`CAUGHT ERROR ${err.toString()}`);
-                res.status(500).json({ errors: err });
-            }
-            res.status(200).send(result);
-        });
-}
-
 function editProfile(req, res) {
     debug('editProfile()');
 
@@ -98,7 +85,6 @@ function editProfile(req, res) {
 
 module.exports = {
     signup,
-    viewOwnProfile,
     viewProfile,
     editProfile,
 };
