@@ -21,7 +21,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **URL**
 
-  /signup
+  `/signup`
 
 * **Method:**
 
@@ -39,15 +39,22 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
   * **Code:** 200 <br />
     **Content:** <br />
-    `
+    ```
     {
         jwt: <String>,
         user: {
             _id: <String>,
-            username: <String>
+            username: <String>,
+            userType: <String>,
+            firstName: <String>,
+            lastName: <String>,
+            medications: <String>,
+            recentProcedures: <String>,
+            conditions: <String>,
         }
     }
-    `
+    ```
+
 * **Error Response:**
 
   * **Code:** 400 BAD REQUEST <br />
@@ -59,7 +66,7 @@ Grant session to a user given the username and password
 
 * **URL**
 
-  /login
+  `/login`
 
 * **Method:**
 
@@ -76,7 +83,7 @@ Grant session to a user given the username and password
 
   * **Code:** 200 <br />
     **Content:** <br />
-    `
+    ```
     {
         jwt: <String>,
         user: {
@@ -90,7 +97,7 @@ Grant session to a user given the username and password
             conditions: <String>,
         }
     }
-    `
+    ```
 * **Error Response:**
 
   * **Code:** 400 BAD REQUEST <br />
@@ -103,7 +110,7 @@ Get posts for app feed
 
 * **URL**
 
-  /posts
+  `/posts`
 
 * **Method:**
 
@@ -155,7 +162,7 @@ Make a new post
 
 * **URL**
 
-  /posts
+  `/posts`
 
 * **Method:**
 
@@ -212,7 +219,7 @@ commenting on a post
 
 * **URL**
 
-  /posts/:post_id/comments
+  `/posts/:post_id/comments`
 
 * **Method:**
 
@@ -263,7 +270,7 @@ Get posts that the user is followering
 
 * **URL**
 
-  /posts/followed
+  `/posts/followed`
 
 * **Method:**
 
@@ -310,7 +317,7 @@ gets the user's own profile information
 
 * **URL**
 
-  /users
+  `/users`
 
 * **Method:**
 
@@ -344,7 +351,7 @@ edit the user's own profile information
 
 * **URL**
 
-  /users
+  `/users`
 
 * **Method:**
 
@@ -358,16 +365,12 @@ edit the user's own profile information
 
 * **Body**
 
-   **Required:**
-   ```
-   {
-      firstName: <String>
-      lastName: <String>
-      medications: <String>
-      recentProcedures: <String>
-      conditions: <String>
-   }
-   ```
+   **Required:**  
+    `firstName: <String>`  
+    `lastName: <String>`  
+    `medications: <String>`  
+    `recentProcedures: <String>`  
+    `conditions: <String>`  
 
 * **Success Response:**
 
@@ -398,7 +401,7 @@ get the profile information of another user
 
 * **URL**
 
-  /users/:user_id
+  `/users/:user_id`
 
 * **Method:**
 
