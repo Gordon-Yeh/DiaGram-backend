@@ -187,25 +187,27 @@ Get single post
     * **Code:** 200 <br />
       **Content:** <br />
       ```
-      {
-        _id: <String>,
-        tite: <String>,
-        body: <String>,
-        userId: <String>,
-        userType: enum { patient, doctor },
-        private: <Boolean>
-        comments: [
+      [
           {
+            _id: <String>,
+            tite: <String>,
             body: <String>,
-            userId: <String>
+            userId: <String>,
             userType: enum { patient, doctor },
+            private: <Boolean>
+            comments: [
+              {
+                body: <String>,
+                userId: <String>
+                userType: enum { patient, doctor },
+                createdAt: <Timestamp>
+              },
+              ...
+            ]
             createdAt: <Timestamp>
-          },
-          ...
-        ]
-        createdAt: <Timestamp>
-        updatedAt: <Timestamp>
-      }
+            updatedAt: <Timestamp>
+          }
+      ]
       ```
 
   * **Error Response:**
