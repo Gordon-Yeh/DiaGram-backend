@@ -39,7 +39,7 @@ function makePost(req, res, next) {
 }
 
 /**
- * Gets and sends back generic post feed
+ * Gets and sends back queried post(s), full feed by default
  * @param  {Object} req the request
  * @param  {Object} res the response
  */

@@ -26,14 +26,22 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 * **Method:**
 
   `POST`
-  
+
 *  **URL Body**
 
    **Required:**
- 
-   `username: <String>` <br />
-   `password: <String>` <br />
+
+   `username: <String>` (5-32 characters) <br />
+   `password: <String>` (8-64 characters) <br />
    `accessCode: <String>` <br />
+
+   **Optional:**
+
+   `firstName: <String>` <br />
+   `lastName: <String>` <br />
+   `medications: <String>` <br />
+   `recentProcedures: <String>` <br />
+   `conditions: <String>` <br />
 
 * **Success Response:**
 
@@ -59,7 +67,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
   * **Code:** 400 BAD REQUEST <br />
     **Content:** <br />
-    `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_PASSWORD" ] }`
+    `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_USERNAME", "INVALID_PASSWORD" ] }`
 
 ## Login
 Grant session to a user given the username and password
@@ -71,11 +79,11 @@ Grant session to a user given the username and password
 * **Method:**
 
   `POST`
-  
+
 *  **URL Body**
 
    **Required:**
- 
+
    `username: <String>` <br />
    `password: <String>` <br />
 
@@ -105,7 +113,7 @@ Grant session to a user given the username and password
     `{ errors : [ "INVALID_CREDENTIALS" ] }`
 
 # Posts
-## Get Post
+## Get Posts
 Get posts for app feed
 
 * **URL**
@@ -119,9 +127,9 @@ Get posts for app feed
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
-    
+
 * **Success Response:**
 
   * **Code:** 200 <br />
@@ -153,9 +161,58 @@ Get posts for app feed
 
 * **Error Response:**
 
-  * **Code:** 403 UNAUTHORIZED <br />
+  * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+## Get Post
+Get single post
+
+  * **URL**
+
+    `/posts?post_id=<postId>`
+
+  * **Method:**
+
+    `GET`
+
+  * **URL HEADER**
+
+     **Required:**
+
+    `Authorization: "Bearer ${jwt}"`
+
+  * **Success Response:**
+
+    * **Code:** 200 <br />
+      **Content:** <br />
+      ```
+      {
+        _id: <String>,
+        tite: <String>,
+        body: <String>,
+        userId: <String>,
+        userType: enum { patient, doctor },
+        private: <Boolean>
+        comments: [
+          {
+            body: <String>,
+            userId: <String>
+            userType: enum { patient, doctor },
+            createdAt: <Timestamp>
+          },
+          ...
+        ]
+        createdAt: <Timestamp>
+        updatedAt: <Timestamp>
+      }
+      ```
+
+  * **Error Response:**
+
+    * **Code:** 401 UNAUTHORIZED <br />
+      **Content:** <br />
+      `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
 ## Make Post
 Make a new post
@@ -171,7 +228,7 @@ Make a new post
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
 
 *  **URL Body**
@@ -210,12 +267,12 @@ Make a new post
     **Content:** <br />
     `{ errors : [ "EMPTY_TITLE", "EMPTY_BODY" ] }`
 
-  * **Code:** 403 UNAUTHORIZED <br />
+  * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
 ## Commenting
-commenting on a post
+Comments on a post, only permissible by doctor userType and OP
 
 * **URL**
 
@@ -228,7 +285,7 @@ commenting on a post
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
 
 *  **URL Body**
@@ -261,12 +318,17 @@ commenting on a post
     **Content:** <br />
     `{ errors : [ "POST_NOT_FOUND" ] }`
 
-  * **Code:** 403 UNAUTHORIZED <br />
+  * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
-    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED", "WRONG_USER" ] }`
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+  * **Code:** 403 FORBIDDEN <br />
+    **Content:** <br />
+    `{ errors : [ "WRONG_USER" ] }`
 
 ## Get Followed Posts
-Get posts that the user is followering
+Get posts that the user is following.
+Posts are automatically followed by a user they make the post, and followed by a doctor if they comment on it.
 
 * **URL**
 
@@ -279,7 +341,7 @@ Get posts that the user is followering
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
 
 * **Success Response:**
@@ -312,42 +374,8 @@ Get posts that the user is followering
     ```
 
 # Users
-## View Profile
-gets the user's own profile information
-
-* **URL**
-
-  `/users`
-
-* **Method:**
-
-  `GET`
-
-* **URL HEADER**
-
-   **Required:**
-  
-  `Authorization: "Bearer ${jwt}"`
-
-* **Success Response:**
-
-  * **Code:** 200 <br />
-    **Content:** <br />
-    ```
-    {
-      _id: <String>
-      username: <String>
-      userType: enum { patient, doctor },
-      firstName: <String>
-      lastName: <String>
-      medications: <String>
-      recentProcedures: <String>
-      conditions: <String>
-    }
-    ```
-
 ## Edit Profile
-edit the user's own profile information
+edit the user's own profile information, returns updated information
 
 * **URL**
 
@@ -355,17 +383,17 @@ edit the user's own profile information
 
 * **Method:**
 
-  `PUTs`
+  `PUT`
 
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
 
 * **Body**
 
-   **Required:**  
+   **Optional:**  
     `firstName: <String>`  
     `lastName: <String>`  
     `medications: <String>`  
@@ -391,7 +419,7 @@ edit the user's own profile information
 
 * **Error Response:**
 
-  * **Code:** 403 UNAUTHORIZED <br />
+  * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -410,7 +438,7 @@ get the profile information of another user
 * **URL HEADER**
 
    **Required:**
-  
+
   `Authorization: "Bearer ${jwt}"`
 
 * **Success Response:**
@@ -431,7 +459,7 @@ get the profile information of another user
       conditions: <String>
     }
     ```
-  
+
     **`If viewer is a patient`**
     ```
     {
@@ -445,7 +473,7 @@ get the profile information of another user
 
 * **Error Response:**
 
-  * **Code:** 403 UNAUTHORIZED <br />
+  * **Code:** 401 UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -458,6 +486,6 @@ happens when there is something wrong with the server internally
 
 * **NOT FOUND** <br />
 happens the URL does not exist
-  * **Code:** 400 <br />
+  * **Code:** 404 <br />
     **Content:** <br />
     `{ errors : [ "NOT_FOUND" ] }`
