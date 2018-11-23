@@ -17,6 +17,12 @@ describe('POST: /posts', () => {
         body: 'this is a make post test'
     };
 
+    let privateTestPost = {
+        title: 'this is a private post',
+        body: 'this is a private question',
+        private: true
+    };
+
     beforeAll(() => {
         return dbHelper
             .clearDB()
@@ -49,7 +55,7 @@ describe('POST: /posts', () => {
             });
     });
 
-    it('should respond with status 200, with the post information \n and store post in the DB if everything is valid', () => {
+    it('should respond with status 200, with the post information \n and store post (with private default to false) in the DB if everything is valid', () => {
         expect(test_patient_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
 
         return request(app)
@@ -63,13 +69,46 @@ describe('POST: /posts', () => {
                 expect(res.body).toHaveProperty('body', testPost.body);
                 expect(res.body).toHaveProperty('userType', testPatient.userType);
                 expect(res.body).toHaveProperty('comments', []);
-                expect(res.body).toHaveProperty('private');
+                expect(res.body).toHaveProperty('private', false);
             })
             .then(() => {
                 return dbHelper
                     .checkPostExist(testPost)
                     .then((post) => {
                         expect(post).toBeDefined();
+                        expect(post).toHaveProperty('title', testPost.title);
+                        expect(post).toHaveProperty('body', testPost.body);
+                        expect(post).toHaveProperty('userType', testPatient.userType);
+                        expect(post).toHaveProperty('private', false);
+                    });
+            });
+    });
+
+    it('should respond with status 200, with the post information \n and store post (with the specified private flag) in the DB if everything is valid', () => {
+        expect(test_patient_jwt).toMatch(/^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/);
+
+        return request(app)
+            .post('/posts')
+            .set('Authorization', `Bearer: ${test_patient_jwt}`)
+            .send(privateTestPost)
+            .then((res) => {
+                expect(res.statusCode).toBe(200);
+                expect(res.body).toHaveProperty('_id');
+                expect(res.body).toHaveProperty('title', privateTestPost.title);
+                expect(res.body).toHaveProperty('body', privateTestPost.body);
+                expect(res.body).toHaveProperty('userType', testPatient.userType);
+                expect(res.body).toHaveProperty('comments', []);
+                expect(res.body).toHaveProperty('private', privateTestPost.private);
+            })
+            .then(() => {
+                return dbHelper
+                    .checkPostExist(privateTestPost)
+                    .then((post) => {
+                        expect(post).toBeDefined();
+                        expect(post).toHaveProperty('title', privateTestPost.title);
+                        expect(post).toHaveProperty('body', privateTestPost.body);
+                        expect(post).toHaveProperty('userType', testPatient.userType);
+                        expect(post).toHaveProperty('private', privateTestPost.private);
                     });
             });
     });
