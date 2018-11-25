@@ -16,7 +16,8 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
     * [View Profile](#view-profile)
     * [Edit Patient's Profile](#edit-patient-profile)
     * [Edit Doctor's Profile](#edit-doctor-profile)
-    * [View Other Profile](#view-other-profile)
+    * [Patient View Other Profile](#patient-view-other-profile)
+    * [Doctor View Other Profile](#doctor-view-other-profile)
 
 # Session
 ## Patient Signup
@@ -575,7 +576,7 @@ edit the doctor's profile information, returns updated information
 
 
 
-## View Other Profile
+## Patient View Other Profile
 get the profile information of another user
 
 * **URL**
@@ -597,7 +598,7 @@ get the profile information of another user
   * **Code:** 200 <br />
     **Content:** <br />
 
-    **`If viewer is a doctor`**
+    **`If profile is of a doctor`**
     ```
     {
       _id: <String>
@@ -605,17 +606,69 @@ get the profile information of another user
       userType: enum { patient, doctor },
       firstName: <String>
       lastName: <String>
+      experience: <String>
+      department: <String>
+      specializations: <String>
+    }
+    ```
+
+
+    **`If profile is another patient`**
+    ```
+    {
+      _id: <String>
+      userType: enum { patient, doctor },
       medications: <String>
       recentProcedures: <String>
       conditions: <String>
     }
     ```
 
-    **`If viewer is a patient`**
+## Doctor View Other Profile
+get the profile information of another user
+
+* **URL**
+
+  `/users/:user_id`
+
+* **Method:**
+
+  `GET`
+
+* **URL HEADER**
+
+   **Required:**
+
+  `Authorization: "Bearer ${jwt}"`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** <br />
+
+    **`If profile is of another doctor`**
     ```
     {
       _id: <String>
+      username: <String>
       userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      experience: <String>
+      department: <String>
+      specializations: <String>
+    }
+    ```
+
+
+    **`If profile is a patient`**
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
       medications: <String>
       recentProcedures: <String>
       conditions: <String>
