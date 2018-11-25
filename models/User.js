@@ -10,9 +10,14 @@ const userSchema = mongoose.Schema({
     userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
     firstName: { type: String },
     lastName: { type: String },
+    // for patients
     medications: { type: String },
     recentProcedures: { type: String },
     conditions: { type: String },
+    // for doctors
+    experience: { type: String },
+    department: { type: String },
+    specializations: { type: String },
     following: [
         { type: mongoose.Schema.Types.ObjectId }
     ],

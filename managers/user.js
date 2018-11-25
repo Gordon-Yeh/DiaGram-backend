@@ -16,6 +16,9 @@ function signup(req, res, next) {
         medications: req.body.medications,
         recentProcedures: req.body.recentProcedures,
         conditions: req.body.conditions,
+        experience: req.body.experience,
+        department: req.body.department,
+        specializations: req.body.specializations
     };
 
     let code = req.body.accessCode;
