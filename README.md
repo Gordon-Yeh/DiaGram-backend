@@ -18,7 +18,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
     * [Edit Doctor's Profile](#edit-doctor-profile)
     * [Patient View Other Profile](#patient-view-other-profile)
     * [Doctor View Other Profile](#doctor-view-other-profile)
-
+4. [Common Error Responses](#common-error-responses)
 # Session
 ## Patient Signup
   Creates a patient user
@@ -49,7 +49,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -69,7 +69,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_USERNAME", "INVALID_PASSWORD" ] }`
 
@@ -102,7 +102,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -122,7 +122,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_USERNAME", "INVALID_PASSWORD" ] }`
 
@@ -146,7 +146,7 @@ Grant session to a patient user given the username and password
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -165,7 +165,7 @@ Grant session to a patient user given the username and password
     ```
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "INVALID_CREDENTIALS" ] }`
 
@@ -189,7 +189,7 @@ Grant session to a doctor user given the username and password
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -208,7 +208,7 @@ Grant session to a doctor user given the username and password
     ```
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "INVALID_CREDENTIALS" ] }`
 
@@ -232,7 +232,7 @@ Get posts for app feed
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     [
@@ -261,7 +261,7 @@ Get posts for app feed
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -284,7 +284,7 @@ Get single post
 
   * **Success Response:**
 
-    * **Code:** 200 <br />
+    * **Code:** `200` <br />
       **Content:** <br />
       ```
       [
@@ -312,7 +312,7 @@ Get single post
 
   * **Error Response:**
 
-    * **Code:** 401 UNAUTHORIZED <br />
+    * **Code:** `401` UNAUTHORIZED <br />
       **Content:** <br />
       `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -346,7 +346,7 @@ Make a new post
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -365,11 +365,11 @@ Make a new post
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "EMPTY_TITLE", "EMPTY_BODY" ] }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -398,7 +398,7 @@ Comments on a post, only permissible by doctor userType and OP
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -416,11 +416,11 @@ Comments on a post, only permissible by doctor userType and OP
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "POST_NOT_FOUND" ] }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -448,7 +448,7 @@ Posts are automatically followed by a user they make the post, and followed by a
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     [
@@ -504,7 +504,7 @@ edit the patients profile information, returns updated information
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -521,7 +521,7 @@ edit the patients profile information, returns updated information
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -553,7 +553,7 @@ edit the doctor's profile information, returns updated information
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -570,7 +570,7 @@ edit the doctor's profile information, returns updated information
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -595,7 +595,7 @@ get the profile information of another user
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
 
     **`If profile is of a doctor`**
@@ -623,6 +623,15 @@ get the profile information of another user
       conditions: <String>
     }
     ```
+* **Error Response:**
+
+  * **Code:** `400` user_id provided doesn't exist<br />
+    **Content:** <br />
+    `{ errors : [ "INVALID_USER_ID" ] }`
+
+  * **Code:** `401` UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
 ## Doctor View Other Profile
 get the profile information of another user
@@ -643,7 +652,7 @@ get the profile information of another user
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
 
     **`If profile is of another doctor`**
@@ -677,14 +686,18 @@ get the profile information of another user
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `400` user_id provided doesn't exist <br />
+    **Content:** <br />
+    `{ errors : [ "INVALID_USER_ID" ] }`
+
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
-# Common Error Response
+# Common Error Responses
 * **INTERNAL SERVER ERROR** <br />
 happens when there is something wrong with the server internally
-  * **Code:** 500 <br />
+  * **Code:** `500` <br />
     **Content:** <br />
     `{ errors : [ "INTERNAL_SERVER_ERROR" ] }`
 
