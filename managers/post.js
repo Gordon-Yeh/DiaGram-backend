@@ -105,7 +105,7 @@ function makeComment(req, res) {
     let comment = {
         body: req.body.body,
         userId: req.user._id,
-        docLastName: req.userType === 'doctor' ? req.user.lastName : null,
+        docLastName: req.user.userType === 'doctor' ? req.user.lastName : undefined,
         userType: req.user.userType,
         postId: req.params.post_id,
     };
