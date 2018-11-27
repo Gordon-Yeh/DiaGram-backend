@@ -142,17 +142,18 @@ Get posts for app feed
         body: <String>,
         userId: <String>,
         userType: enum { patient, doctor },
-        private: <Boolean>
+        private: <Boolean>,
         comments: [
           {
             body: <String>,
-            userId: <String>
+            userId: <String>,
+            docLastName: <String>,
             userType: enum { patient, doctor },
             createdAt: <Timestamp>
           },
           ...
-        ]
-        createdAt: <Timestamp>
+        ],
+        createdAt: <Timestamp>,
         updatedAt: <Timestamp>
       },
       ...
@@ -194,17 +195,18 @@ Get single post
             body: <String>,
             userId: <String>,
             userType: enum { patient, doctor },
-            private: <Boolean>
+            private: <Boolean>,
             comments: [
               {
                 body: <String>,
-                userId: <String>
+                userId: <String>,
+                docLastName: <String>,
                 userType: enum { patient, doctor },
                 createdAt: <Timestamp>
               },
               ...
-            ]
-            createdAt: <Timestamp>
+            ],
+            createdAt: <Timestamp>,
             updatedAt: <Timestamp>
           }
       ]
@@ -257,7 +259,7 @@ Make a new post
       userType: enum { patient, doctor },
       private: <Boolean>,
       comments: [],
-      createdAt: <Timestamp>
+      createdAt: <Timestamp>,
       updatedAt: <Timestamp>
     }
     ```    
@@ -309,7 +311,7 @@ Comments on a post, only permissible by doctor userType and OP
       userType: enum { patient, doctor },
       private: <Boolean>,
       comments: [ {newly added comment} ],
-      createdAt: <Timestamp>
+      createdAt: <Timestamp>,
       updatedAt: <Timestamp>
     }
     ```    
@@ -358,17 +360,18 @@ Posts are automatically followed by a user they make the post, and followed by a
         body: <String>,
         userId: <String>,
         userType: enum { patient, doctor },
-        private: <Boolean>
+        private: <Boolean>,
         comments: [
           {
             body: <String>,
-            userId: <String>
+            userId: <String>,
+            docLastName: <String>,
             userType: enum { patient, doctor },
             createdAt: <Timestamp>
           },
           ...
-        ]
-        createdAt: <Timestamp>
+        ],
+        createdAt: <Timestamp>,
         updatedAt: <Timestamp>
       },
       ...

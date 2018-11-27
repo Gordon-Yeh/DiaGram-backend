@@ -12,6 +12,7 @@ const postSchema = mongoose.Schema({
     comments: [{
         body: { type: String },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        docLastName: { type: String },
         userType: { type: String, enum: ['admin', 'patient', 'doctor'], required: true },
         createdAt: { type : Date, default: Date.now }
     }],
