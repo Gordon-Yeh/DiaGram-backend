@@ -3,8 +3,10 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 # Table of Contents
 1. [Session](#session)  
-    * [Signup](#signup)
-    * [Login](#login)
+    * [Patient Signup](#patient-signup)
+    * [Doctor Signup](#doctor-signup)
+    * [Patient Login](#patient-login)
+    * [Doctor Login](#doctor-login)
 2. [Posts](#posts)  
     * [Get Post](#get-post)
     * [Make Post](#make-post)
@@ -12,12 +14,14 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
     * [Get Followed Post](#get-followed-posts)
 3. [Users](#users)
     * [View Profile](#view-profile)
-    * [Edit Profile](#edit-profile)
-    * [View Other Profile](#view-other-profile)
-
+    * [Edit Patient's Profile](#edit-patient-profile)
+    * [Edit Doctor's Profile](#edit-doctor-profile)
+    * [Patient View Other Profile](#patient-view-other-profile)
+    * [Doctor View Other Profile](#doctor-view-other-profile)
+4. [Common Error Responses](#common-error-responses)
 # Session
-## Signup
-  Creates a user
+## Patient Signup
+  Creates a patient user
 
 * **URL**
 
@@ -45,7 +49,7 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -65,12 +69,65 @@ This is the API Node.js server code for the app DiaGram written for CPEN-321<br 
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_USERNAME", "INVALID_PASSWORD" ] }`
 
-## Login
-Grant session to a user given the username and password
+## Doctor Signup
+  Creates a doctor user
+
+* **URL**
+
+  `/signup`
+
+* **Method:**
+
+  `POST`
+
+*  **URL Body**
+
+   **Required:**
+
+   `username: <String>` (5-32 characters) <br />
+   `password: <String>` (8-64 characters) <br />
+   `accessCode: <String>` <br />
+
+   **Optional:**
+
+   `firstName: <String>` <br />
+   `lastName: <String>` <br />
+   `experience: <String>` <br />
+   `department: <String>` <br />
+   `specializations: <String>` <br />
+
+* **Success Response:**
+
+  * **Code:** `200` <br />
+    **Content:** <br />
+    ```
+    {
+        jwt: <String>,
+        user: {
+            _id: <String>,
+            username: <String>,
+            userType: <String>,
+            firstName: <String>,
+            lastName: <String>,
+            experience: <String>,
+            department: <String>,
+            specializations: <String>,
+        }
+    }
+    ```
+
+* **Error Response:**
+
+  * **Code:** `400` BAD REQUEST <br />
+    **Content:** <br />
+    `{ errors : [ "DUPLICATE_USERNAME", "INVALID_ACCESS_CODE", "INVALID_USERNAME", "INVALID_PASSWORD" ] }`
+
+## Patient Login
+Grant session to a patient user given the username and password
 
 * **URL**
 
@@ -89,7 +146,7 @@ Grant session to a user given the username and password
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -108,7 +165,50 @@ Grant session to a user given the username and password
     ```
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
+    **Content:** <br />
+    `{ errors : [ "INVALID_CREDENTIALS" ] }`
+
+## Doctor Login
+Grant session to a doctor user given the username and password
+
+* **URL**
+
+  `/login`
+
+* **Method:**
+
+  `POST`
+
+*  **URL Body**
+
+   **Required:**
+
+   `username: <String>` <br />
+   `password: <String>` <br />
+
+* **Success Response:**
+
+  * **Code:** `200` <br />
+    **Content:** <br />
+    ```
+    {
+        jwt: <String>,
+        user: {
+            _id: <String>,
+            username: <String>,
+            userType: <String>,
+            firstName: <String>,
+            lastName: <String>,
+            experience: <String>,
+            department: <String>,
+            specializations: <String>,
+        }
+    }
+    ```
+* **Error Response:**
+
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "INVALID_CREDENTIALS" ] }`
 
@@ -132,7 +232,7 @@ Get posts for app feed
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     [
@@ -162,7 +262,7 @@ Get posts for app feed
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -185,7 +285,7 @@ Get single post
 
   * **Success Response:**
 
-    * **Code:** 200 <br />
+    * **Code:** `200` <br />
       **Content:** <br />
       ```
       [
@@ -214,7 +314,7 @@ Get single post
 
   * **Error Response:**
 
-    * **Code:** 401 UNAUTHORIZED <br />
+    * **Code:** `401` UNAUTHORIZED <br />
       **Content:** <br />
       `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -248,7 +348,7 @@ Make a new post
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -267,11 +367,11 @@ Make a new post
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "EMPTY_TITLE", "EMPTY_BODY" ] }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -300,7 +400,7 @@ Comments on a post, only permissible by doctor userType and OP
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -318,11 +418,11 @@ Comments on a post, only permissible by doctor userType and OP
 
 * **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
+  * **Code:** `400` BAD REQUEST <br />
     **Content:** <br />
     `{ errors : [ "POST_NOT_FOUND" ] }`
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
@@ -350,7 +450,7 @@ Posts are automatically followed by a user they make the post, and followed by a
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     [
@@ -379,8 +479,8 @@ Posts are automatically followed by a user they make the post, and followed by a
     ```
 
 # Users
-## Edit Profile
-edit the user's own profile information, returns updated information
+## Edit Patient Profile
+edit the patients profile information, returns updated information
 
 * **URL**
 
@@ -407,7 +507,7 @@ edit the user's own profile information, returns updated information
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
     ```
     {
@@ -424,12 +524,62 @@ edit the user's own profile information, returns updated information
 
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `401` UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+## Edit Doctor Profile
+edit the doctor's profile information, returns updated information
+
+* **URL**
+
+  `/users`
+
+* **Method:**
+
+  `PUT`
+
+* **URL HEADER**
+
+   **Required:**
+
+  `Authorization: "Bearer ${jwt}"`
+
+* **Body**
+
+   **Optional:**  
+    `firstName: <String>`  
+    `lastName: <String>`  
+    `experience: <String>`  
+    `specializations: <String>`  
+    `department: <String>`  
+
+* **Success Response:**
+
+  * **Code:** `200` <br />
+    **Content:** <br />
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      experience: <String>
+      specializations: <String>
+      department: <String>
+    }
+    ```
+
+* **Error Response:**
+
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
 
-## View Other Profile
+
+## Patient View Other Profile
 get the profile information of another user
 
 * **URL**
@@ -448,10 +598,82 @@ get the profile information of another user
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** `200` <br />
     **Content:** <br />
 
-    **`If viewer is a doctor`**
+    **`If profile is of a doctor`**
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      experience: <String>
+      department: <String>
+      specializations: <String>
+    }
+    ```
+
+
+    **`If profile is another patient`**
+    ```
+    {
+      _id: <String>
+      userType: enum { patient, doctor },
+      medications: <String>
+      recentProcedures: <String>
+      conditions: <String>
+    }
+    ```
+* **Error Response:**
+
+  * **Code:** `400` user_id provided doesn't exist<br />
+    **Content:** <br />
+    `{ errors : [ "INVALID_USER_ID" ] }`
+
+  * **Code:** `401` UNAUTHORIZED <br />
+    **Content:** <br />
+    `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
+
+## Doctor View Other Profile
+get the profile information of another user
+
+* **URL**
+
+  `/users/:user_id`
+
+* **Method:**
+
+  `GET`
+
+* **URL HEADER**
+
+   **Required:**
+
+  `Authorization: "Bearer ${jwt}"`
+
+* **Success Response:**
+
+  * **Code:** `200` <br />
+    **Content:** <br />
+
+    **`If profile is of another doctor`**
+    ```
+    {
+      _id: <String>
+      username: <String>
+      userType: enum { patient, doctor },
+      firstName: <String>
+      lastName: <String>
+      experience: <String>
+      department: <String>
+      specializations: <String>
+    }
+    ```
+
+
+    **`If profile is a patient`**
     ```
     {
       _id: <String>
@@ -465,27 +687,20 @@ get the profile information of another user
     }
     ```
 
-    **`If viewer is a patient`**
-    ```
-    {
-      _id: <String>
-      userType: enum { patient, doctor },
-      medications: <String>
-      recentProcedures: <String>
-      conditions: <String>
-    }
-    ```
-
 * **Error Response:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
+  * **Code:** `400` user_id provided doesn't exist <br />
+    **Content:** <br />
+    `{ errors : [ "INVALID_USER_ID" ] }`
+
+  * **Code:** `401` UNAUTHORIZED <br />
     **Content:** <br />
     `{ errors : [ "UNAUTHORIZED", "SESSION_EXPIRED" ] }`
 
-# Common Error Response
+# Common Error Responses
 * **INTERNAL SERVER ERROR** <br />
 happens when there is something wrong with the server internally
-  * **Code:** 500 <br />
+  * **Code:** `500` <br />
     **Content:** <br />
     `{ errors : [ "INTERNAL_SERVER_ERROR" ] }`
 

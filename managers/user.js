@@ -16,6 +16,9 @@ function signup(req, res, next) {
         medications: req.body.medications,
         recentProcedures: req.body.recentProcedures,
         conditions: req.body.conditions,
+        experience: req.body.experience,
+        department: req.body.department,
+        specializations: req.body.specializations
     };
 
     let code = req.body.accessCode;
@@ -41,31 +44,31 @@ function signup(req, res, next) {
 
 function viewProfile(req, res) {
     debug('viewProfile()');
-    let userId = req.params.user_id;
-    let userType = req.user.userType;
+    let profileUserId = req.params.user_id;
+    let viewer = req.user;
 
-    if(userType === 'doctor') {
-        User.model
-            .findById(userId, '-following', (err, result) => {
-                if(err) {
-                    debug(`CAUGHT ERROR ${err.toString()}`);
-
-                    res.status(500).json({ errors: err });
+    return   User.model
+        .findById(profileUserId, '-following')
+        .then((profile) => {
+            if (profile) {
+                if (viewer.userType == 'patient' && profile.userType == 'patient') {
+                    res.json({
+                        _id: profile._id,
+                        userType: profile.userType,
+                        medications: profile.medications,
+                        recentProcedures: profile.recentProcedures,
+                        conditions: profile.conditions
+                    });
+                } else {
+                    res.json(profile);
                 }
-                res.status(200).send(result);
-            });
-    } else if(userType === 'patient') {
-        User.model
-            .findById(userId, '-firstName -lastName -username -following', (err, result) => {
-                if(err) {
-                    debug(`CAUGHT ERROR ${err.toString()}`);
-                    res.status(500).json({ errors: err });
-                }
-                res.status(200).send(result);
-            });
-    } else {
-        res.status(400).json({ errors: errorTypes.INVALID_USER_TYPE});
-    }
+            } else {
+                res.status(400).json({ errors: [errorTypes.INVALID_USER_ID] });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({ errors: [errorTypes.INTERNAL_SERVER_ERROR] });
+        });
 }
 
 function editProfile(req, res) {
